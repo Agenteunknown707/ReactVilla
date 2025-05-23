@@ -1,64 +1,55 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Header from "./Header"
 import Sidebar from "./Sidebar"
 
-
 function IncidenciasScreen({ onIncidenciaClick, onLogout }) {
   const [activeDropdown, setActiveDropdown] = useState(null)
+  const [incidencias, setIncidencias] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  const incidencias = [
-    {
-      id: "INC-003",
-      tipo: "Basura",
-      estado: "En proceso",
-      ubicacion: "Colonia La Villa",
-      fecha: "3/3/2025",
-      asignado: "Servicios Públicos",
-    },
-    {
-      id: "INC-002",
-      tipo: "undefined",
-      estado: "Pendiente",
-      ubicacion: "Lateral Libramiento Gobernadora Griselda Álvarez, , 28983, Ciudad de Villa de Álvarez, Colima",
-      fecha: "19/5/2025",
-      asignado: "Por definir",
-      titulo: "Falla en alumbrado público",
-      descripcion: "Tres postes de luz consecutivos sin funcionar en la calle principal de la colonia.",
-    },
-    {
-      id: "INC-001",
-      tipo: "undefined",
-      estado: "Pendiente",
-      ubicacion: "Avenida Niños Héroes, Real Centenario, 28984, Ciudad de Villa de Álvarez, Colima",
-      fecha: "19/5/2025",
-      asignado: "Por definir",
-    },
-    {
-      id: "INC-019",
-      tipo: "Suministro de agua",
-      estado: "",
-      ubicacion: "Colonia El Porvenir",
-      fecha: "5/3/2025",
-      asignado: "Por definir",
-    },
-    {
-      id: "INC-017",
-      tipo: "Calidad del agua",
-      estado: "En proceso",
-      ubicacion: "Colonia Las Flores",
-      fecha: "7/3/2025",
-      asignado: "Servicios Públicos",
-    },
-    {
-      id: "INC-018",
-      tipo: "Alcantarillado",
-      estado: "En proceso",
-      ubicacion: "Av. Constitución",
-      fecha: "6/3/2025",
-      asignado: "Agua Potable",
-    },
-  ]
+  useEffect(() => {
+    fetchIncidencias()
+  }, [])
+
+  const fetchIncidencias = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/Incidencias')
+      if (!response.ok) {
+        throw new Error('Error al cargar las incidencias')
+      }
+      const data = await response.json()
+      
+      // Transform the data to match the required format
+      const formattedIncidencias = data.map(incidencia => ({
+        id: `INC-${String(incidencia.idIncidencia).padStart(3, '0')}`,
+        tipo: incidencia.categoria.charAt(0).toUpperCase() + incidencia.categoria.slice(1),
+        estado: incidencia.estadoReporte.charAt(0).toUpperCase() + incidencia.estadoReporte.slice(1),
+        ubicacion: incidencia.ubicacion,
+        fecha: new Date(incidencia.fechaCreacion).toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }),
+        asignado: incidencia.dependencia || "Por definir",
+        // Keep additional data that might be needed for details
+        descripcion: incidencia.descripcionCiudadano,
+        imagenUrl: incidencia.imagenUrl,
+        coordenadas: {
+          lat: incidencia.latitud,
+          lng: incidencia.longitud
+        }
+      }))
+
+      setIncidencias(formattedIncidencias)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error:', error)
+      setError('Error al cargar las incidencias')
+      setLoading(false)
+    }
+  }
 
   const toggleDropdown = (id) => {
     if (activeDropdown === id) {
@@ -66,6 +57,34 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout }) {
     } else {
       setActiveDropdown(id)
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="main-container">
+        <Sidebar activeItem="incidencias" />
+        <div className="content-container">
+          <Header onLogout={onLogout} />
+          <main className="main-content">
+            <div className="loading-message">Cargando incidencias...</div>
+          </main>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="main-container">
+        <Sidebar activeItem="incidencias" />
+        <div className="content-container">
+          <Header onLogout={onLogout} />
+          <main className="main-content">
+            <div className="error-message">{error}</div>
+          </main>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -93,15 +112,15 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout }) {
                 </select>
               </div>
               <div className="filter-container">
-              <div className="filter-select-container">
-                <select className="filter-select">
-                  <option>Todos los estados</option>
-                  <option>Pendiente</option>
-                  <option>Resuelto</option>
-                  <option>Cancelado</option>
-                </select>
+                <div className="filter-select-container">
+                  <select className="filter-select">
+                    <option>Todos los estados</option>
+                    <option>Pendiente</option>
+                    <option>Resuelto</option>
+                    <option>Cancelado</option>
+                  </select>
+                </div>
               </div>
-            </div>
             </div>
           </div>
 
