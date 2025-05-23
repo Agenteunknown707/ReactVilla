@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+"use client"
+
+import { useState } from "react"
+import "./App.css"
+import LoginScreen from "./components/LoginScreen"
+import IncidenciasScreen from "./components/IncidenciasScreen"
+import DetalleIncidenciaScreen from "./components/DetalleIncidenciaScreen"
 
 function App() {
+  const [currentScreen, setCurrentScreen] = useState("login")
+  const [selectedIncidencia, setSelectedIncidencia] = useState(null)
+
+  const handleLogin = () => {
+    setCurrentScreen("incidencias")
+  }
+
+  const handleLogout = () => {
+    setCurrentScreen("login")
+  }
+
+  const handleIncidenciaClick = (incidencia) => {
+    setSelectedIncidencia(incidencia)
+    setCurrentScreen("detalle")
+  }
+
+  const handleVolverClick = () => {
+    setCurrentScreen("incidencias")
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      {currentScreen === "login" && <LoginScreen onLogin={handleLogin} />}
+      {currentScreen === "incidencias" && (
+        <IncidenciasScreen onIncidenciaClick={handleIncidenciaClick} onLogout={handleLogout} />
+      )}
+      {currentScreen === "detalle" && (
+        <DetalleIncidenciaScreen
+          incidencia={selectedIncidencia}
+          onVolverClick={handleVolverClick}
+          onLogout={handleLogout}
+        />
+      )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
