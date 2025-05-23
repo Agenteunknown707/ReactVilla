@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Sidebar from "./Sidebar"
 import Header from "./Header"
+import MapView from "./MapView"
 
 function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
   const [activeTab, setActiveTab] = useState("detalles")
@@ -106,15 +107,45 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
 
               {activeTab === "imagenes" && (
                 <div className="imagenes-content">
-                  <p>No hay imágenes disponibles</p>
+                  <div className="imagenes-grid">
+                    <div className="imagen-cuadro">
+                      {incidencia.imagenUrl ? (
+                        <img
+                          src={incidencia.imagenUrl}
+                          alt="Imagen de la incidencia"
+                          className="incidencia-imagen"
+                        />
+                      ) : (
+                        <div className="imagen-placeholder">
+                          <p>No hay imagen disponible para esta incidencia.</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="historial-cambios">
+                    <h3>Historial de Cambios</h3>
+                    <p className="historial-subtitle">Registro de actualizaciones de la incidencia</p>
+                  </div>
+
                 </div>
               )}
 
               {activeTab === "ubicacion" && (
                 <div className="ubicacion-content">
-                  <p>Mapa no disponible</p>
+                  <MapView
+                    lat={incidencia.coordenadas.lat}
+                    lng={incidencia.coordenadas.lng}
+                    incidencia={incidencia}
+                  />
+                  <div className="historial-cambios">
+                    <h3>Historial de Cambios</h3>
+                    <p className="historial-subtitle">Registro de actualizaciones de la incidencia</p>
+                  </div>
+
                 </div>
               )}
+
             </div>
           </div>
 

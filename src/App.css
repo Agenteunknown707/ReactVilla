@@ -767,3 +767,33 @@ tr:hover {
     display: none;
   }
 }
+
+.imagenes-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.imagen-cuadro {
+  width: 100%;
+  max-width: 400px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 10px;
+  background-color: #fafafa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.incidencia-imagen {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.imagen-placeholder {
+  text-align: center;
+  padding: 30px;
+  color: #777;
+  font-style: italic;
+}
