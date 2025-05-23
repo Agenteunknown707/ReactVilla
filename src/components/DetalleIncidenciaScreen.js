@@ -372,7 +372,11 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
                       setRechazarError("")
                     }}
                   ></textarea>
-                  {rechazarError && <p className="error-message">{rechazarError}</p>}
+                  {rechazarError && (
+                    <p className="rechazar-error-message">
+                      {rechazarError}
+                    </p>
+                  )}
                 </div>
 
                 <button className="rechazar-button" onClick={handleRechazar}>✕ Rechazar Incidencia</button>
