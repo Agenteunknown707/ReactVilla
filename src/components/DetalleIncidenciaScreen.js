@@ -22,6 +22,7 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
   const [error, setError] = useState(null)
   const [selectedDependencia, setSelectedDependencia] = useState("")
   const [comentario, setComentario] = useState("")
+  const [rechazarError, setRechazarError] = useState("")
 
   const fetchIncidenciaDetails = useCallback(async () => {
     try {
@@ -98,6 +99,73 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
 
       if (!response.ok) {
         throw new Error('Error al asignar la incidencia')
+      }
+
+      // Actualizar los datos de la incidencia
+      await fetchIncidenciaDetails()
+    } catch (error) {
+      console.error('Error:', error)
+      setError(error.message)
+    }
+  }
+
+  const handleResolver = async () => {
+    try {
+      const idMatch = incidencia.id.match(/INC-(\d+)/)
+      if (!idMatch) {
+        throw new Error('Formato de ID inválido')
+      }
+      const id = idMatch[1]
+
+      const response = await fetch(`http://localhost:4000/api/Incidencias/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          estadoReporte: "resuelto"
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al marcar la incidencia como resuelta')
+      }
+
+      // Actualizar los datos de la incidencia
+      await fetchIncidenciaDetails()
+    } catch (error) {
+      console.error('Error:', error)
+      setError(error.message)
+    }
+  }
+
+  const handleRechazar = async () => {
+    try {
+      if (!comentario.trim()) {
+        setRechazarError("Debe escribir un motivo para rechazar la incidencia")
+        return
+      }
+
+      setRechazarError("")
+      const idMatch = incidencia.id.match(/INC-(\d+)/)
+      if (!idMatch) {
+        throw new Error('Formato de ID inválido')
+      }
+      const id = idMatch[1]
+
+      const response = await fetch(`http://localhost:4000/api/Incidencias/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          descripcionAyuntamiento: comentario,
+          estadoReporte: "rechazado"
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al rechazar la incidencia')
       }
 
       // Actualizar los datos de la incidencia
@@ -201,7 +269,7 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
                     </div>
                   </div>
 
-                  <button className="resolver-button">
+                  <button className="resolver-button" onClick={handleResolver}>
                     <span className="check-icon">✓</span> Marcar como resuelto
                   </button>
 
@@ -293,7 +361,21 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
                 <h3>Verificación de Incidencia</h3>
                 <p>Si esta incidencia no es válida, puede rechazarla</p>
 
-                <button className="rechazar-button">✕ Rechazar Incidencia</button>
+                <div className="form-group">
+                  <label>Motivo de rechazo</label>
+                  <textarea
+                    placeholder="Escriba el motivo por el que rechaza esta incidencia..."
+                    className="comentario-textarea"
+                    value={comentario}
+                    onChange={(e) => {
+                      setComentario(e.target.value)
+                      setRechazarError("")
+                    }}
+                  ></textarea>
+                  {rechazarError && <p className="error-message">{rechazarError}</p>}
+                </div>
+
+                <button className="rechazar-button" onClick={handleRechazar}>✕ Rechazar Incidencia</button>
               </div>
             </div>
           </div>
