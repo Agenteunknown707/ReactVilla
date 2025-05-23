@@ -6,6 +6,7 @@ import LoginScreen from "./components/LoginScreen"
 import IncidenciasScreen from "./components/IncidenciasScreen"
 import DetalleIncidenciaScreen from "./components/DetalleIncidenciaScreen"
 
+
 function App() {
   const [currentScreen, setCurrentScreen] = useState("login")
   const [selectedIncidencia, setSelectedIncidencia] = useState(null)

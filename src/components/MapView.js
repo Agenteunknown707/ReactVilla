@@ -1,44 +1,36 @@
-import React, { useState } from 'react'
-import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api'
+import React from 'react'
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 
-const containerStyle = {
-  width: '100%',
-  height: '300px',
-}
+// Corregir los íconos del marcador para que se vean bien
+delete L.Icon.Default.prototype._getIconUrl
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+})
 
 function MapView({ lat, lng, incidencia }) {
-  const [infoOpen, setInfoOpen] = useState(false)
-
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'TU_API_KEY_GOOGLE_MAPS', // <-- Reemplaza con tu API Key real
-  })
-
-  if (!isLoaded) return <div>Cargando mapa...</div>
+  const position = [parseFloat(lat), parseFloat(lng)]
 
   return (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={{ lat: parseFloat(lat), lng: parseFloat(lng) }}
-      zoom={16}
-    >
-      <Marker
-        position={{ lat: parseFloat(lat), lng: parseFloat(lng) }}
-        onMouseOver={() => setInfoOpen(true)}
-        onMouseOut={() => setInfoOpen(false)}
-      >
-        {infoOpen && (
-          <InfoWindow position={{ lat: parseFloat(lat), lng: parseFloat(lng) }}>
-            <div>
-              <p><strong>ID:</strong> {incidencia.id}</p>
-              <p><strong>Tipo:</strong> {incidencia.tipo}</p>
-              <p><strong>Estado:</strong> {incidencia.estado}</p>
-              <p><strong>Ubicación:</strong> {incidencia.ubicacion}</p>
-              <p><strong>Asignado a:</strong> {incidencia.asignado}</p>
-            </div>
-          </InfoWindow>
-        )}
+    <MapContainer center={position} zoom={16} style={{ height: '300px', width: '100%' }}>
+      <TileLayer
+        url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        attribution='&copy; OpenStreetMap contributors'
+      />
+      <Marker position={position}>
+        <Popup>
+          <p><strong>ID:</strong> {incidencia?.id}</p>
+          <p><strong>Tipo:</strong> {incidencia?.tipo}</p>
+          <p><strong>Estado:</strong> {incidencia?.estado}</p>
+          <p><strong>Ubicación:</strong> {incidencia?.ubicacion}</p>
+          <p><strong>Asignado a:</strong> {incidencia?.asignado}</p>
+        </Popup>
       </Marker>
-    </GoogleMap>
+    </MapContainer>
   )
 }
 
