@@ -3,7 +3,11 @@ import { useState, useEffect } from "react"
 import Header from "./Header"
 import Sidebar from "./Sidebar"
 
-function IncidenciasScreen({ onIncidenciaClick, onLogout }) {
+function IncidenciasScreen({ onIncidenciaClick, onLogout, onNavigate }) {
+  // State for search and filters
+  const [searchTerm, setSearchTerm] = useState('');
+  const [tipoFiltro, setTipoFiltro] = useState('');
+  const [estadoFiltro, setEstadoFiltro] = useState('');
   const [activeDropdown, setActiveDropdown] = useState(null)
   const [incidencias, setIncidencias] = useState([])
   const [loading, setLoading] = useState(true)
@@ -62,7 +66,7 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout }) {
   if (loading) {
     return (
       <div className="main-container">
-        <Sidebar activeItem="incidencias" />
+        <Sidebar activeItem="incidencias" onNavigate={onNavigate} />
         <div className="content-container">
           <Header onLogout={onLogout} />
           <main className="main-content">
@@ -76,7 +80,7 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout }) {
   if (error) {
     return (
       <div className="main-container">
-        <Sidebar activeItem="incidencias" />
+        <Sidebar activeItem="incidencias" onNavigate={onNavigate} />
         <div className="content-container">
           <Header onLogout={onLogout} />
           <main className="main-content">
@@ -87,39 +91,60 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout }) {
     )
   }
 
+  // Filter incidencias based on search and filters
+  const filteredIncidencias = incidencias.filter(incidencia => {
+    const matchesSearch = incidencia.ubicacion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         incidencia.id.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTipo = !tipoFiltro || incidencia.tipo === tipoFiltro;
+    const matchesEstado = !estadoFiltro || incidencia.estado.toLowerCase() === estadoFiltro.toLowerCase();
+    
+    return matchesSearch && matchesTipo && matchesEstado;
+  });
+
   return (
     <div className="main-container">
-      <Sidebar activeItem="incidencias" />
+      <Sidebar activeItem="incidencias" onNavigate={onNavigate} />
       <div className="content-container">
         <Header onLogout={onLogout} />
         <main className="main-content">
           <div className="incidencias-header">
             <h1>Incidencias</h1>
-            <div className="search-container">
-              <input type="text" placeholder="Buscar incidencias..." className="search-input" />
-              <button className="search-button">
-                <i className="search-icon">🔍</i>
-              </button>
-            </div>
-            <div className="filter-container">
-              <div className="filter-select-container">
-                <select className="filter-select">
-                  <option>Todos los tipos</option>
-                  <option>Bache</option>
-                  <option>Alumbrado público</option>
-                  <option>Basura</option>
-                  <option>Fuga de agua</option>
-                </select>
+            <div className="header-controls">
+              <div className="search-container">
+                <input 
+                  type="text" 
+                  placeholder="Buscar por ubicación o ID..." 
+                  className="search-input" 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button className="search-button">
+                  <i className="search-icon">🔍</i>
+                </button>
               </div>
               <div className="filter-container">
-                <div className="filter-select-container">
-                  <select className="filter-select">
-                    <option>Todos los estados</option>
-                    <option>Pendiente</option>
-                    <option>Resuelto</option>
-                    <option>Cancelado</option>
-                  </select>
-                </div>
+                <select 
+                  className="filter-select"
+                  value={tipoFiltro}
+                  onChange={(e) => setTipoFiltro(e.target.value)}
+                >
+                  <option value="">Todos los tipos</option>
+                  <option value="Bache">Bache</option>
+                  <option value="Alumbrado">Alumbrado público</option>
+                  <option value="Basura">Basura</option>
+                  <option value="Agua">Fuga de agua</option>
+                </select>
+                <select 
+                  className="filter-select"
+                  value={estadoFiltro}
+                  onChange={(e) => setEstadoFiltro(e.target.value)}
+                >
+                  <option value="">Todos los estados</option>
+                  <option value="Pendiente">Pendiente</option>
+                  <option value="En Proceso">En Proceso</option>
+                  <option value="Resuelto">Resuelto</option>
+                  <option value="Cancelado">Cancelado</option>
+                </select>
               </div>
             </div>
           </div>
@@ -138,42 +163,50 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout }) {
                 </tr>
               </thead>
               <tbody>
-                {incidencias.map((incidencia) => (
-                  <tr key={incidencia.id}>
-                    <td>{incidencia.id}</td>
-                    <td>{incidencia.tipo}</td>
-                    <td>
-                      {incidencia.estado && (
-                        <span className={`estado-badge ${incidencia.estado.replace(/\s+/g, "-").toLowerCase()}`}>
-                          {incidencia.estado}
-                        </span>
-                      )}
-                    </td>
-                    <td>{incidencia.ubicacion}</td>
-                    <td>{incidencia.fecha}</td>
-                    <td>{incidencia.asignado}</td>
-                    <td>
-                      <div className="actions-dropdown">
-                        <button
-                          className="action-button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            toggleDropdown(incidencia.id)
-                          }}
-                        >
-                          ...
-                        </button>
-                        {activeDropdown === incidencia.id && (
-                          <div className="dropdown-menu actions-menu">
-                            <option className="dropdown-item" onClick={() => onIncidenciaClick(incidencia)}>
-                              Ver más detalles
-                            </option>
-                          </div>
+                {filteredIncidencias.length > 0 ? (
+                  filteredIncidencias.map((incidencia) => (
+                    <tr key={incidencia.id}>
+                      <td>{incidencia.id}</td>
+                      <td>{incidencia.tipo}</td>
+                      <td>
+                        {incidencia.estado && (
+                          <span className={`estado-badge ${incidencia.estado.toLowerCase().replace(/\s+/g, "-")}`}>
+                            {incidencia.estado}
+                          </span>
                         )}
-                      </div>
+                      </td>
+                      <td>{incidencia.ubicacion}</td>
+                      <td>{incidencia.fecha}</td>
+                      <td>{incidencia.asignado}</td>
+                      <td>
+                        <div className="actions-dropdown">
+                          <button
+                            className="action-button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              toggleDropdown(incidencia.id)
+                            }}
+                          >
+                            ...
+                          </button>
+                          {activeDropdown === incidencia.id && (
+                            <div className="dropdown-menu actions-menu">
+                              <option className="dropdown-item" onClick={() => onIncidenciaClick(incidencia)}>
+                                Ver más detalles
+                              </option>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>
+                      No se encontraron incidencias que coincidan con los filtros
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
