@@ -414,9 +414,9 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
                   </div>
 
                   <button 
-                    className={`rechazar-button ${isLoading ? 'disabled' : ''}`} 
+                    className={`rechazar-button ${isLoading || incidenciaData?.estadoReporte === 'rechazado' ? 'disabled' : ''}`} 
                     onClick={handleRechazar}
-                    disabled={isLoading}
+                    disabled={isLoading || incidenciaData?.estadoReporte === 'rechazado'}
                   >
                     ✕ {isLoading ? 'Procesando...' : 'Rechazar Incidencia'}
                   </button>
