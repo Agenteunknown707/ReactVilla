@@ -25,15 +25,7 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
   const [rechazoMotivo, setRechazoMotivo] = useState("")
   const [rechazarError, setRechazarError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [historial, setHistorial] = useState([])
   
-  // Actualizar el historial cuando cambien los datos de la incidencia
-  useEffect(() => {
-    if (incidenciaData?.historial) {
-      setHistorial(incidenciaData.historial)
-    }
-  }, [incidenciaData])
-
   const fetchIncidenciaDetails = useCallback(async () => {
     try {
       // Extract the numeric ID from the INC-XXX format
@@ -81,34 +73,39 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
 
     setIsLoading(true)
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      const nuevoHistorial = {
-        fecha: new Date().toISOString(),
-        accion: 'asignacion',
-        dependencia: selectedDependencia,
-        comentario: comentario,
-        usuario: 'Usuario Actual' // Esto debería venir del contexto de autenticación
+      const idMatch = incidencia.id.match(/INC-(\d+)/)
+      if (!idMatch) {
+        throw new Error('Formato de ID inválido')
       }
-      
-      setHistorial(prev => [nuevoHistorial, ...prev])
-      
-      // Actualizar el estado local
-      setIncidenciaData(prev => ({
-        ...prev,
-        estado: 'Asignada',
-        dependenciaAsignada: selectedDependencia,
-        historial: [nuevoHistorial, ...(prev.historial || [])]
-      }))
-      
-      // Mostrar notificación de éxito
-      alert('Incidencia asignada correctamente')
+      const id = idMatch[1]
+
+      const response = await fetch(`http://localhost:4000/api/Incidencias/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          estadoReporte: "en_proceso",
+          idDependencia: selectedDependencia,
+          descripcionDependencia: comentario
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al asignar la incidencia')
+      }
+
+      // Actualizar los datos de la incidencia
+      await fetchIncidenciaDetails()
       
       // Limpiar campos
       setComentario('')
+      
+      // Mostrar notificación de éxito
+      alert('Incidencia asignada correctamente')
     } catch (error) {
-      console.error('Error al asignar incidencia:', error)
+      console.error('Error:', error)
+      setError(error.message)
       alert('Ocurrió un error al asignar la incidencia')
     } finally {
       setIsLoading(false)
@@ -157,33 +154,39 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
 
     setIsLoading(true)
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      const nuevoHistorial = {
-        fecha: new Date().toISOString(),
-        accion: 'rechazo',
-        motivo: rechazoMotivo,
-        usuario: 'Usuario Actual' // Esto debería venir del contexto de autenticación
+      const idMatch = incidencia.id.match(/INC-(\d+)/)
+      if (!idMatch) {
+        throw new Error('Formato de ID inválido')
       }
-      
-      setHistorial(prev => [nuevoHistorial, ...prev])
-      
-      // Actualizar el estado local
-      setIncidenciaData(prev => ({
-        ...prev,
-        estado: 'Rechazada',
-        historial: [nuevoHistorial, ...(prev.historial || [])]
-      }))
-      
-      // Mostrar notificación de éxito
-      alert('Incidencia rechazada correctamente')
+      const id = idMatch[1]
+
+      const response = await fetch(`http://localhost:4000/api/Incidencias/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          estadoReporte: "rechazado",
+          descripcionDependencia: rechazoMotivo
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al rechazar la incidencia')
+      }
+
+      // Actualizar los datos de la incidencia
+      await fetchIncidenciaDetails()
       
       // Limpiar campos
       setRechazoMotivo('')
       setRechazarError('')
+      
+      // Mostrar notificación de éxito
+      alert('Incidencia rechazada correctamente')
     } catch (error) {
-      console.error('Error al rechazar incidencia:', error)
+      console.error('Error:', error)
+      setError(error.message)
       alert('Ocurrió un error al rechazar la incidencia')
     } finally {
       setIsLoading(false)
@@ -309,11 +312,6 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
                       </div>
                     </div>
                   </div>
-
-                  <div className="historial-cambios">
-                    <h3>Historial de Cambios</h3>
-                    <p className="historial-subtitle">Registro de actualizaciones de la incidencia</p>
-                  </div>
                 </div>
               )}
 
@@ -360,11 +358,11 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
                   onChange={(e) => setSelectedDependencia(e.target.value)}
                 >
                   <option value="">Seleccionar dependencia</option>
-                  <option value="Obras Públicas">Obras Públicas</option>
-                  <option value="Servicios Públicos">Servicios Públicos</option>
-                  <option value="Agua Potable">Agua Potable</option>
-                  <option value="Protección Civil">Protección Civil</option>
-                  <option value="Seguridad Pública">Seguridad Pública</option>
+                  <option value={1}>Obras Públicas</option>
+                  <option value={2}>Servicios Públicos</option>
+                  <option value={3}>Agua Potable</option>
+                  <option value={4}>Protección Civil</option>
+                  <option value={5}>Seguridad Pública</option>
                 </select>
               </div>
 
@@ -420,52 +418,6 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
                   </button>
                 </div>
               )}
-            </div>
-            
-            {/* Sección de Historial de Cambios */}
-            <div className="historial-cambios" style={{ marginTop: '2rem', background: 'white', borderRadius: '8px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}>
-              <h3 style={{ marginTop: '0', color: '#2c3e50', borderBottom: '1px solid #eee', paddingBottom: '0.75rem', marginBottom: '1.5rem' }}>Historial de Cambios</h3>
-              <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                {historial.length > 0 ? (
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {historial.map((item, index) => (
-                      <li key={index} style={{ padding: '1rem 0', borderBottom: '1px solid #f5f5f5' }}>
-                        <div style={{ fontSize: '0.8rem', color: '#6c757d', marginBottom: '0.25rem' }}>
-                          {new Date(item.fecha).toLocaleString()}
-                        </div>
-                        <div style={{ fontWeight: 500, marginBottom: '0.5rem' }}>
-                          {item.accion === 'asignacion' ? (
-                            <span>Asignada a <strong>{item.dependencia}</strong></span>
-                          ) : (
-                            <span>Incidencia <strong>rechazada</strong></span>
-                          )}
-                          {item.usuario && (
-                            <span style={{ fontWeight: 'normal', color: '#6c757d', marginLeft: '0.5rem', fontSize: '0.9em' }}>
-                              por {item.usuario}
-                            </span>
-                          )}
-                        </div>
-                        {(item.comentario || item.motivo) && (
-                          <div style={{ 
-                            background: '#f8f9fa', 
-                            padding: '0.75rem', 
-                            borderRadius: '6px', 
-                            fontSize: '0.9rem', 
-                            color: '#495057', 
-                            marginTop: '0.5rem', 
-                            whiteSpace: 'pre-wrap',
-                            wordBreak: 'break-word'
-                          }}>
-                            {item.comentario || item.motivo}
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No hay historial de cambios disponible</p>
-                )}
-              </div>
             </div>
           </div>
         </div>
