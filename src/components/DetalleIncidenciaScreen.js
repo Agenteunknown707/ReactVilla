@@ -87,7 +87,7 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
         body: JSON.stringify({
           estadoReporte: "en_proceso",
           idDependencia: selectedDependencia,
-          descripcionDependencia: comentario
+          descripcionAyuntamiento: comentario
         })
       })
 
