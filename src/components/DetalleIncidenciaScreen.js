@@ -295,7 +295,11 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
                     </div>
                   </div>
 
-                  <button className="resolver-button" onClick={handleResolver}>
+                  <button 
+                    className={`resolver-button ${incidenciaData?.estadoReporte === 'rechazado' ? 'disabled' : ''}`} 
+                    onClick={handleResolver}
+                    disabled={incidenciaData?.estadoReporte === 'rechazado'}
+                  >
                     <span className="check-icon">✓</span> Marcar como resuelto
                   </button>
 
@@ -358,11 +362,11 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
                   onChange={(e) => setSelectedDependencia(e.target.value)}
                 >
                   <option value="">Seleccionar dependencia</option>
-                  <option value={1}>Obras Públicas</option>
-                  <option value={2}>Servicios Públicos</option>
-                  <option value={3}>Agua Potable</option>
-                  <option value={4}>Protección Civil</option>
-                  <option value={5}>Seguridad Pública</option>
+                  <option value={2}>Obras Públicas</option>
+                  <option value={3}>Servicios Públicos</option>
+                  <option value={4}>Agua Potable</option>
+                  <option value={5}>Protección Civil</option>
+                  <option value={6}>Seguridad Pública</option>
                 </select>
               </div>
 
@@ -378,9 +382,9 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
               </div>
 
               <button 
-                className={`asignar-button ${isLoading ? 'disabled' : ''}`} 
+                className={`asignar-button ${isLoading || incidenciaData?.estadoReporte === 'rechazado' ? 'disabled' : ''}`} 
                 onClick={handleAsignar}
-                disabled={isLoading}
+                disabled={isLoading || incidenciaData?.estadoReporte === 'rechazado'}
               >
                 {isLoading ? 'Procesando...' : 'Asignar Incidencia'}
               </button>

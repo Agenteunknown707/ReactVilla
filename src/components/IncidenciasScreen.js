@@ -140,10 +140,10 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout, onNavigate }) {
                   onChange={(e) => setEstadoFiltro(e.target.value)}
                 >
                   <option value="">Todos los estados</option>
-                  <option value="Pendiente">Pendiente</option>
-                  <option value="En Proceso">En Proceso</option>
-                  <option value="Resuelto">Resuelto</option>
-                  <option value="Cancelado">Cancelado</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="en_proceso">En Proceso</option>
+                  <option value="resuelto">Resuelto</option>
+                  <option value="rechazado">Rechazado</option>
                 </select>
               </div>
             </div>
