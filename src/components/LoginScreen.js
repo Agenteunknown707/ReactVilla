@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react"
+import { API_ENDPOINTS } from "../config/api"
 
 function LoginScreen({ onLogin }) {
   const [email, setEmail] = useState("")
@@ -9,7 +10,7 @@ function LoginScreen({ onLogin }) {
   const handleLogin = async () => {
     try {
       // Make API call to verify credentials
-      const response = await fetch(`http://localhost:4000/api/Dependencias/email/${email}`)
+      const response = await fetch(`${API_ENDPOINTS.DEPENDENCIAS}/email/${email}`)
       
       if (!response.ok) {
         throw new Error("Credenciales inválidas")

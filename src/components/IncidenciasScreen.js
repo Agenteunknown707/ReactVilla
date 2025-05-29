@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react"
 import Header from "./Header"
 import Sidebar from "./Sidebar"
+import { API_ENDPOINTS } from "../config/api"
 
 function IncidenciasScreen({ onIncidenciaClick, onLogout, onNavigate }) {
   // State for search and filters
@@ -19,7 +20,7 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout, onNavigate }) {
 
   const fetchIncidencias = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/Incidencias')
+      const response = await fetch(API_ENDPOINTS.INCIDENCIAS)
       if (!response.ok) {
         throw new Error('Error al cargar las incidencias')
       }

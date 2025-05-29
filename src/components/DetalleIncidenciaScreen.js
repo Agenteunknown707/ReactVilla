@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import Sidebar from "./Sidebar"
 import Header from "./Header"
 import MapView from "./MapView"
+import { API_ENDPOINTS } from "../config/api"
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 
@@ -35,7 +36,7 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
       }
       const id = idMatch[1]
       
-      const response = await fetch(`http://localhost:4000/api/Incidencias/${id}`)
+      const response = await fetch(`${API_ENDPOINTS.INCIDENCIAS}/${id}`)
       
       if (!response.ok) {
         throw new Error('Error al cargar los detalles de la incidencia')
@@ -79,7 +80,7 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
       }
       const id = idMatch[1]
 
-      const response = await fetch(`http://localhost:4000/api/Incidencias/${id}`, {
+      const response = await fetch(`${API_ENDPOINTS.INCIDENCIAS}/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -120,7 +121,7 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
       }
       const id = idMatch[1]
 
-      const response = await fetch(`http://localhost:4000/api/Incidencias/${id}`, {
+      const response = await fetch(`${API_ENDPOINTS.INCIDENCIAS}/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -160,7 +161,7 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
       }
       const id = idMatch[1]
 
-      const response = await fetch(`http://localhost:4000/api/Incidencias/${id}`, {
+      const response = await fetch(`${API_ENDPOINTS.INCIDENCIAS}/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
