@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar"
 import Header from "./Header"
 import MapView from "./MapView"
 import { API_ENDPOINTS } from "../config/api"
+import API_BASE_URL from "../config/api"
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 
@@ -323,11 +324,13 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
               {activeTab === "imagenes" && (
                 <div className="imagenes-content">
                   {incidenciaData?.imagenUrl ? (
-                    <img 
-                      src={`http://localhost:4000${incidenciaData.imagenUrl}`} 
-                      alt="Imagen de la incidencia"
-                      style={{ maxWidth: '100%', borderRadius: '8px' }}
-                    />
+                    <>                    
+                      <img 
+                        src={`${API_BASE_URL}${incidenciaData.imagenUrl}`} 
+                        alt="Imagen de la incidencia"
+                        style={{ maxWidth: '100%', borderRadius: '8px' }}
+                      />
+                    </>
                   ) : (
                     <p>No hay imágenes disponibles</p>
                   )}
