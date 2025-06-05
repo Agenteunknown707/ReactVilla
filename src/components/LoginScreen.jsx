@@ -9,26 +9,20 @@ function LoginScreen({ onLogin }) {
 
   const handleLogin = async () => {
     try {
-      // Make API call to verify credentials
-      const response = await fetch(`${API_ENDPOINTS.DEPENDENCIAS}/email/${email}`)
-      
-      if (!response.ok) {
-        throw new Error("Credenciales inválidas")
-      }
+      const response = await fetch(`${API_ENDPOINTS.DEPENDENCIAS}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo: email, password }),
+      });
 
-      const data = await response.json()
-      
-      // Check if password matches
-      if (data.contraseña === password) {
-        // Store user data in localStorage if needed
-        localStorage.setItem("currentUser", JSON.stringify(data))
-        // Call onLogin to navigate to IncidenciasScreen
-        onLogin()
-      } else {
-        setError("Contraseña incorrecta")
-      }
+      if (!response.ok) throw new Error('Credenciales inválidas');
+
+      const { token, usuario } = await response.json();
+      localStorage.setItem('token', token);
+      localStorage.setItem('currentUser', JSON.stringify(usuario));
+      onLogin();
     } catch (error) {
-      setError("Error al iniciar sesión. Por favor, verifica tus credenciales.")
+      setError('Error al iniciar sesión. Por favor, verifica tus credenciales.')
     }
   }
 

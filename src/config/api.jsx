@@ -7,4 +7,10 @@ export const API_ENDPOINTS = {
     // Add other endpoints here as needed
 };
 
+export const fetchWithAuth = async (url, options = {}) => {
+  const token = localStorage.getItem('token');
+  const headers = { ...options.headers, Authorization: `Bearer ${token}` };
+  return fetch(url, { ...options, headers });
+};
+
 export default API_BASE_URL;
