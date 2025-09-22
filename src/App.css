@@ -393,15 +393,14 @@ body {
 }
 
 
-
 /* Ajusta el sidebar para que también sea fijo */
 .sidebar {
   width: 200px;
   background-color: #f8f9fa;
-  border-right: 1px solid #e9ecef;
+  border-right: 1px solid #dfe3e8;
   padding: 10px;
   position: fixed;
-  top: 65px;
+  top: 75px;
   left: 0;
   height: 100vh;
   z-index: 1000;;
@@ -456,7 +455,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid #dfe3e8;
   background-color: white;
   position: fixed; /* Fija el header */
   top: 5px;
