@@ -24,8 +24,35 @@ function Header({ onLogout }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
   const [notifications, setNotifications] = useState(mockNotifications);
+  const [currentUser, setCurrentUser] = useState(null);
   const notificationRef = useRef(null);
   const profileMenuRef = useRef(null);
+
+  // Cargar datos del usuario desde localStorage
+  useEffect(() => {
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      try {
+        setCurrentUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Error al parsear datos del usuario:', error);
+      }
+    }
+  }, []);
+
+  // Función para determinar el texto a mostrar según el rol
+  const getAdminText = () => {
+    if (!currentUser || !currentUser.rol) {
+      return null;
+    }
+
+    const { rol } = currentUser;
+    
+    // Mostrar texto para rol 
+    return <span className="admin-text"> rol: {rol}</span>;   
+    
+    
+  };
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -93,7 +120,7 @@ function Header({ onLogout }) {
       <div className="header-actions">
         <div className="admin-badge">
           <span className="admin-icon">👤</span>
-          <span className="admin-text">Administrador: Sistema</span>
+          {getAdminText()}
         </div>
 
         <div className="notification-container" ref={notificationRef}>

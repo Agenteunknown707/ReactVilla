@@ -7,8 +7,35 @@ function LoginScreen({ onLogin }) {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
 
+  // Constante estática para roles (temporal hasta implementar en BD)
+  const ROLES = {
+    ADMIN: "admin",
+    OBRAS_PUBLICAS: "obras_publicas",
+  }
+
+  // Función para determinar el rol del usuario
+  const determineUserRole = (email, password) => {
+    // Excepción especial: admin@example.com con admin123 se asigna como dependencia
+    if (email === "admin@example.com" && password === "admin123") {
+      return ROLES.OBRAS_PUBLICAS
+    }
+  }
+
   const handleLogin = async () => {
     try {
+      // Verificar excepción especial primero
+      if (email === "admin@example.com" && password === "admin123") {
+        const userData = {
+          email: email,
+          nombre: "Administrador del Sistema",
+          rol: ROLES.OBRAS_PUBLICAS,
+          // Agregar otros campos necesarios
+        }
+        localStorage.setItem("currentUser", JSON.stringify(userData))
+        onLogin()
+        return
+      }
+
       // Make API call to verify credentials
       const response = await fetch(`${API_ENDPOINTS.DEPENDENCIAS}/email/${email}`)
       
@@ -20,8 +47,17 @@ function LoginScreen({ onLogin }) {
       
       // Check if password matches
       if (data.contraseña === password) {
+        // Determinar rol del usuario
+        const userRole = determineUserRole(email, password)
+        
+        // Agregar rol a los datos del usuario
+        const userData = {
+          ...data,
+          rol: userRole
+        }
+        
         // Store user data in localStorage if needed
-        localStorage.setItem("currentUser", JSON.stringify(data))
+        localStorage.setItem("currentUser", JSON.stringify(userData))
         // Call onLogin to navigate to IncidenciasScreen
         onLogin()
       } else {

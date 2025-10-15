@@ -13,8 +13,19 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout, onNavigate }) {
   const [incidencias, setIncidencias] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
+  const [currentUser, setCurrentUser] = useState(null)
+ 
   useEffect(() => {
+    // Cargar datos del usuario desde localStorage
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      try {
+        setCurrentUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Error al parsear datos del usuario:', error);
+      }
+    }
+    
     fetchIncidencias()
   }, [])
 
@@ -92,8 +103,25 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout, onNavigate }) {
     )
   }
 
-  // Filter incidencias based on search and filters
-  const filteredIncidencias = incidencias.filter(incidencia => {
+ // Función para aplicar filtros basados en el rol del usuario
+ const applyRoleBasedFilter = (incidencias) => {
+  const { rol } = currentUser;
+  
+  if (rol === 'admin') {
+    return incidencias; // Si es rol admin o ayuntamiento, mostrar todas
+  }
+  
+  // Si el usuario tiene rol de dependencia, filtrar solo incidencias del tipo de esa dependencia o rol
+  if (rol === !'admin') {
+    return incidencias.filter(incidencia => 
+      incidencia.tipo.toLowerCase() === rol.toLowerCase()
+    );
+  }
+
+};
+
+  // Filter incidencias based on search, filters, and user role
+  const filteredIncidencias = applyRoleBasedFilter(incidencias).filter(incidencia => {
     const matchesSearch = incidencia.ubicacion.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          incidencia.id.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesTipo = !tipoFiltro || incidencia.tipo === tipoFiltro;
