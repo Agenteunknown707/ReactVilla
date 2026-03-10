@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
 import { API_ENDPOINTS } from "../config/api"
+import logocol from "../assets/logocol.png"
 
 function LoginScreen({ onLogin }) {
   const [email, setEmail] = useState("")
@@ -37,14 +38,14 @@ function LoginScreen({ onLogin }) {
       <div className="login-card">
         <div className="logo-container">
           <img
-            src="https://tse4.mm.bing.net/th?id=OIP.DpSNbcx-nOUYQmPLAjmNegHaCy&pid=Api&P=0&h=180"
-            alt="Logo La Villa es"
+            src={logocol}
+            alt="Logo Colima"
             className="logo"
           />
         </div>
         <h1 className="sistema-title">Sistema de Gestión de Incidencias</h1>
-        <h2 className="ayuntamiento-title">H. AYUNTAMIENTO DE VILLA DE ÁLVAREZ</h2>
-        <p className="slogan">HONESTA, TRANSPARENTE Y CERCANA</p>
+        <h2 className="ayuntamiento-title">H. AYUNTAMIENTO DE COLIMA</h2>
+        <p className="slogan">OTRO COLIMA POR TI</p>
 
         <div className="login-form">
           {error && <div className="error-message" style={{ color: "red", marginBottom: "1rem" }}>{error}</div>}
