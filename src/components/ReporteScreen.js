@@ -22,10 +22,14 @@ const ReporteScreen = ({ onNavigate, onLogout }) => {
   // Mock data for dependencies
   const dependencias = [
     { id: 'todas', nombre: 'Todas las dependencias' },
-    { id: 'obras-publicas', nombre: 'Obras Públicas' },
-    { id: 'servicios-urbanos', nombre: 'Servicios Urbanos' },
-    { id: 'seguridad', nombre: 'Seguridad' },
-    { id: 'medio-ambiente', nombre: 'Medio Ambiente' }
+    { id: '1', nombre: 'Dirección de Obras Públicas' },
+    { id: '2', nombre: 'Dirección de Alumbrado Público' },
+    { id: '3', nombre: 'Comisión o Dirección de Agua Potable CIAPACOV' },
+    { id: '4', nombre: 'Dirección de Servicios Públicos Municipales' },
+    { id: '5', nombre: 'Dirección de Parques y Jardines' },
+    { id: '6', nombre: 'Dirección de Ecología o Medio Ambiente' },
+    { id: '7', nombre: 'Dirección de Tránsito o Movilidad Municipal' },
+    { id: '8', nombre: 'Protección Civil' }
   ];
 
   // Load report history from localStorage on component mount

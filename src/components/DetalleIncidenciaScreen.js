@@ -366,11 +366,14 @@ function DetalleIncidenciaScreen({ incidencia, onVolverClick, onLogout }) {
                   onChange={(e) => setSelectedDependencia(e.target.value)}
                 >
                   <option value="">Seleccionar dependencia</option>
-                  <option value={2}>Obras Públicas</option>
-                  <option value={3}>Servicios Públicos</option>
-                  <option value={4}>Agua Potable</option>
-                  <option value={5}>Protección Civil</option>
-                  <option value={6}>Seguridad Pública</option>
+                  <option value={1}>Dirección de Obras Públicas</option>
+                  <option value={2}>Dirección de Alumbrado Público</option>
+                  <option value={3}>Comisión o Dirección de Agua Potable CIAPACOV</option>
+                  <option value={4}>Dirección de Servicios Públicos Municipales</option>
+                  <option value={5}>Dirección de Parques y Jardines</option>
+                  <option value={6}>Dirección de Ecología o Medio Ambiente</option>
+                  <option value={7}>Dirección de Tránsito o Movilidad Municipal</option>
+                  <option value={8}>Protección Civil</option>
                 </select>
               </div>
 
