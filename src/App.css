@@ -22,7 +22,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url("https://i.pinimg.com/736x/01/21/06/0121061354d4f57b2c3c1524fba4f106.jpg");
+  background-image: url("https://estacionpacifico.com/wp-content/uploads/2022/07/27-Julio-Colima-2.png");
   background-size: cover;
   background-position: center;
   padding: 20px;
@@ -56,7 +56,7 @@ body {
 
 .ayuntamiento-title {
   font-size: 18px;
-  color: #e6007e;
+  color:#002D72;
   margin-bottom: 5px;
   font-weight: 600;
 }
@@ -100,7 +100,7 @@ body {
   width: 100%;
   margin-top: 10px;
   padding: 12px;
-  background-color: #e6007e;
+  background-color: #255090;
   color: white;
   border: none;
   border-radius: 5px;
@@ -111,7 +111,7 @@ body {
 }
 
 .btn-iniciar:hover {
-  background-color: #d81b60;
+  background-color: #002D72;
 }
 
 .credenciales-info {
@@ -195,7 +195,7 @@ body {
 }
 
 .tab-btn.active {
-  background: #e6007e;
+  background: #002D72;
   color: white;
 }
 
@@ -250,7 +250,7 @@ body {
 
 .card-trend.negative {
   background: #f8d7da;
-  color: #721c24;
+  color: #002D72;
 }
 
 .dashboard-charts {
@@ -426,7 +426,7 @@ body {
 }
 
 .sidebar-item.active {
-  background-color: #e6007e;
+  background-color: #002D72;
   color: white;
 }
 
@@ -489,7 +489,7 @@ body {
 
 .header-subtitle {
   font-size: 14px;
-  color: #e6007e;
+  color: #002D72;
   margin: 0;
 }
 
@@ -504,12 +504,12 @@ body {
   align-items: center;
   background: linear-gradient(
     to right,
-    rgba(230, 0, 126, 0.2),
-    rgba(230, 0, 126, 0.4)
+    rgba(58, 2, 225, 0.2),
+    rgba(38, 0, 230, 0.4)
   );
   padding: 5px 15px;
   border-radius: 20px;
-  color: #e6007e;
+  color: #002D72;
   font-size: 14px;
 }
 
@@ -531,7 +531,7 @@ body {
   position: absolute;
   top: -5px;
   right: -5px;
-  background-color: #e6007e;
+  background-color: #e60000;
   color: white;
   font-size: 10px;
   width: 16px;
@@ -585,12 +585,12 @@ body {
 
 .search-input:focus {
   outline: none;
-  border-color: #e6007e;
+  border-color: #002D72;
 }
 
 .search-button {
   padding: 0 20px;
-  background-color: #e6007e;
+  background-color: #c8cdd3;
   color: white;
   border: none;
   border-radius: 0 6px 6px 0;
@@ -602,7 +602,7 @@ body {
 }
 
 .search-button:hover {
-  background-color: #d81b60;
+  background-color: #002D72;
 }
 
 .filter-container {
@@ -625,7 +625,7 @@ body {
 
 .filter-select:focus {
   outline: none;
-  border-color: #e6007e;
+  border-color: #002D72;
 }
 
 .incidencias-table {
@@ -641,7 +641,7 @@ body {
 .pagination{
   display: flex;
   align-items: center;
-  gap: 70%;
+  gap: 80%;
 }
 
 .pagination-button{
@@ -650,7 +650,7 @@ body {
   padding: 8px 12px;
   cursor: pointer;
   font-size: 14px;
-  color: #e6007e;
+  color: #002D72;
   transition: background-color 0.3s, color 0.3s;
 }
 
@@ -761,7 +761,7 @@ body {
 
 .dropdown-item:hover {
   background-color: #f8f8f8;
-  color: #e6007e;
+  color: #002D72;
   padding-left: 20px;
 }
 
@@ -836,7 +836,7 @@ body {
 
 .form-control:focus {
   outline: none;
-  border-color: #e6007e;
+  border-color: #002D72;
   box-shadow: 0 0 0 2px rgba(230, 0, 126, 0.1);
 }
 
@@ -858,7 +858,7 @@ body {
 }
 
 .format-option:hover {
-  border-color: #e6007e;
+  border-color: #002D72;
 }
 
 .format-option input[type="radio"] {
@@ -877,7 +877,7 @@ body {
 
 .btn-generar {
   grid-column: 1 / -1;
-  background-color: #e6007e;
+  background-color: #21529b;
   color: white;
   border: none;
   border-radius: 6px;
@@ -893,7 +893,7 @@ body {
 }
 
 .btn-generar:hover {
-  background-color: #c4126a;
+  background-color: #002D72;
 }
 
 .btn-generar:disabled {
@@ -995,7 +995,7 @@ body {
 
 .btn-action:hover {
   background-color: #f0f0f0;
-  color: #e6007e;
+  color: #002D72;
   border-color: #e0e0e0;
 }
 
@@ -1152,7 +1152,7 @@ body {
 }
 
 .tab-button.active {
-  color: #e6007e;
+  color: #002D72;
   font-weight: 500;
 }
 
@@ -1163,7 +1163,7 @@ body {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #e6007e;
+  background-color: #002D72;
 }
 
 .detalle-tab-content {
@@ -2173,7 +2173,7 @@ textarea:disabled {
 .asignar-button {
   width: 100%;
   padding: 10px;
-  background-color: #e6007e;
+  background-color: #002D72;
   color: white;
   border: none;
   border-radius: 5px;

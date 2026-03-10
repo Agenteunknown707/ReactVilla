@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { FaBell, FaCheck, FaCog, FaTimes, FaUser, FaSignOutAlt } from 'react-icons/fa';
-import logo from "../assets/logo.png";
+import logo from "../assets/image.png";
 
 // Mock notifications data
 const mockNotifications = {
@@ -86,7 +86,7 @@ function Header({ onLogout }) {
         <img src={logo || "/placeholder.svg"} alt="Logo" className="header-logo" />
         <div className="header-title-container">
           <h1 className="header-title">Sistema de Gestión de Incidencias</h1>
-          <h2 className="header-subtitle">H. AYUNTAMIENTO DE VILLA DE ÁLVAREZ</h2>
+          <h2 className="header-subtitle">H. AYUNTAMIENTO DE COLIMA</h2>
         </div>
       </div>
 

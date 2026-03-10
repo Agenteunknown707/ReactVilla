@@ -37,13 +37,13 @@ function LoginScreen({ onLogin }) {
       <div className="login-card">
         <div className="logo-container">
           <img
-            src="https://tse4.mm.bing.net/th?id=OIP.DpSNbcx-nOUYQmPLAjmNegHaCy&pid=Api&P=0&h=180"
-            alt="Logo La Villa es"
+            src="/colima.png" 
+            alt="Logo Colima"
             className="logo"
           />
         </div>
         <h1 className="sistema-title">Sistema de Gestión de Incidencias</h1>
-        <h2 className="ayuntamiento-title">H. AYUNTAMIENTO DE VILLA DE ÁLVAREZ</h2>
+        <h2 className="ayuntamiento-title">H. AYUNTAMIENTO DE COLIMA</h2>
         <p className="slogan">HONESTA, TRANSPARENTE Y CERCANA</p>
 
         <div className="login-form">
@@ -53,7 +53,7 @@ function LoginScreen({ onLogin }) {
             <label>Correo electrónico</label>
             <input 
               type="email" 
-              placeholder="admin@example.com" 
+              placeholder="admin@correo.com" 
               className="input-yellow"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
