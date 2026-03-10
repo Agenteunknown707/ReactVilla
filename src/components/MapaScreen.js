@@ -42,7 +42,7 @@ const Legend = () => {
       </div>
       <div className="legend-item">
         <span className="legend-color" style={{ backgroundColor: '#c0392b' }}></span>
-        <span>Cancelado</span>
+        <span>Rechazado</span>
       </div>
     </div>
   );
@@ -58,10 +58,10 @@ const ChangeView = ({ center, zoom }) => {
 // Custom marker icon based on status
 const getStatusIcon = (status) => {
   const iconUrl = {
-    'Pendiente': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
-    'En Proceso': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-    'Resuelto': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-    'Cancelado': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'
+    'pendiente': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
+    'en_proceso': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+    'resuelto': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    'rechazado': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'
   }[status] || icon;
 
   return L.icon({
@@ -110,7 +110,7 @@ const MapaScreen = ({ onNavigate, onLogout }) => {
         descripcion: incidencia.descripcion || 'Sin descripción',
         lat: parseFloat(incidencia.latitud),
         lng: parseFloat(incidencia.longitud),
-        estado: incidencia.estado || 'Pendiente',
+        estado: incidencia.estadoReporte || incidencia.estado || 'pendiente',
         fecha: incidencia.fechaCreacion || incidencia.fecha || new Date().toISOString().split('T')[0],
         direccion: incidencia.ubicacion || incidencia.direccion || 'Sin dirección',
         categoria: incidencia.categoria || incidencia.tipo || 'General'
@@ -158,10 +158,10 @@ const MapaScreen = ({ onNavigate, onLogout }) => {
   // Get status color
   const getStatusColor = (status) => {
     const colors = {
-      'Pendiente': '#ffd700',
-      'En Proceso': '#2e86c1',
-      'Resuelto': '#27ae60',
-      'Cancelado': '#c0392b'
+      'pendiente': '#ffd700',
+      'en_proceso': '#2e86c1',
+      'resuelto': '#27ae60',
+      'rechazado': '#c0392b'
     };
     return colors[status] || '#666';
   };
