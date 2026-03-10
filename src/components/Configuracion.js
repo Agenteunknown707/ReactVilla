@@ -14,7 +14,7 @@ function Configuracion({ onLogout, onNavigate }) {
   // Form state
   const [formData, setFormData] = useState({
     systemName: 'Sistema de Gestión de Incidencias',
-    municipality: 'Villa de Álvarez',
+    municipality: 'Colima',
     logo: null,
     description: 'Sistema para la gestión y seguimiento de incidencias reportadas por los ciudadanos.'
   });
@@ -178,12 +178,7 @@ function Configuracion({ onLogout, onNavigate }) {
             >
               Notificaciones
             </button>
-            <button 
-              className={`tab-button ${activeTab === 'sistema' ? 'active' : ''}`}
-              onClick={() => setActiveTab('sistema')}
-            >
-              Sistema
-            </button>
+           
           </div>
           
           {/* Notification */}

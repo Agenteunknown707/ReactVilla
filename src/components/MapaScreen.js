@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { FaSyncAlt, FaInfoCircle } from 'react-icons/fa';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import { API_ENDPOINTS } from '../config/api';
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
 
@@ -41,7 +42,7 @@ const Legend = () => {
       </div>
       <div className="legend-item">
         <span className="legend-color" style={{ backgroundColor: '#c0392b' }}></span>
-        <span>Cancelado</span>
+        <span>Rechazado</span>
       </div>
     </div>
   );
@@ -57,10 +58,10 @@ const ChangeView = ({ center, zoom }) => {
 // Custom marker icon based on status
 const getStatusIcon = (status) => {
   const iconUrl = {
-    'Pendiente': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
-    'En Proceso': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-    'Resuelto': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-    'Cancelado': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'
+    'pendiente': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
+    'en_proceso': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+    'resuelto': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    'rechazado': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'
   }[status] || icon;
 
   return L.icon({
@@ -86,12 +87,39 @@ const MapaScreen = ({ onNavigate, onLogout }) => {
     cargarIncidencias();
   }, []);
 
-  // Mock function to load incidents (replace with API call)
-  const cargarIncidencias = () => {
+  // Function to load incidents from API
+  const cargarIncidencias = async () => {
     setLoading(true);
     
-    // Simulate API call with mock data
-    setTimeout(() => {
+    try {
+      const response = await fetch(API_ENDPOINTS.INCIDENCIAS);
+      
+      if (!response.ok) {
+        throw new Error('Error al cargar las incidencias');
+      }
+      
+      const data = await response.json();
+      
+      // Filter incidencias that have valid coordinates
+      const incidenciasConCoordenadas = data.filter(incidencia => 
+        incidencia.latitud && incidencia.longitud && 
+        incidencia.latitud !== 0 && incidencia.longitud !== 0
+      ).map(incidencia => ({
+        id: incidencia.id,
+        titulo: incidencia.titulo || incidencia.descripcion || 'Sin título',
+        descripcion: incidencia.descripcion || 'Sin descripción',
+        lat: parseFloat(incidencia.latitud),
+        lng: parseFloat(incidencia.longitud),
+        estado: incidencia.estadoReporte || incidencia.estado || 'pendiente',
+        fecha: incidencia.fechaCreacion || incidencia.fecha || new Date().toISOString().split('T')[0],
+        direccion: incidencia.ubicacion || incidencia.direccion || 'Sin dirección',
+        categoria: incidencia.categoria || incidencia.tipo || 'General'
+      }));
+      
+      setIncidencias(incidenciasConCoordenadas);
+    } catch (error) {
+      console.error('Error cargando incidencias:', error);
+      // Fallback to mock data if API fails
       const mockIncidencias = [
         {
           id: 1,
@@ -114,45 +142,12 @@ const MapaScreen = ({ onNavigate, onLogout }) => {
           fecha: '2023-05-22',
           direccion: 'Calle Hidalgo #456, Col. Centro',
           categoria: 'Alumbrado Público'
-        },
-        {
-          id: 3,
-          titulo: 'Fuga de agua',
-          descripcion: 'Fuga de agua en la esquina',
-          lat: 19.2389,
-          lng: -103.7241,
-          estado: 'Resuelto',
-          fecha: '2023-05-20',
-          direccion: 'Calle Juárez #789, Col. Centro',
-          categoria: 'Agua Potable'
-        },
-        {
-          id: 4,
-          titulo: 'Recolección de basura',
-          descripcion: 'Basura acumulada en la esquina',
-          lat: 19.2489,
-          lng: -103.7041,
-          estado: 'Cancelado',
-          fecha: '2023-05-18',
-          direccion: 'Calle Madero #101, Col. Centro',
-          categoria: 'Limpieza Pública'
-        },
-        {
-          id: 5,
-          titulo: 'Semáforo dañado',
-          descripcion: 'Semáforo no funciona en la esquina',
-          lat: 19.2589,
-          lng: -103.7241,
-          estado: 'Pendiente',
-          fecha: '2023-05-23',
-          direccion: 'Esq. Av. Morelos y 5 de Mayo',
-          categoria: 'Tránsito'
         }
       ];
-      
       setIncidencias(mockIncidencias);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   // Refresh map data
@@ -163,10 +158,10 @@ const MapaScreen = ({ onNavigate, onLogout }) => {
   // Get status color
   const getStatusColor = (status) => {
     const colors = {
-      'Pendiente': '#ffd700',
-      'En Proceso': '#2e86c1',
-      'Resuelto': '#27ae60',
-      'Cancelado': '#c0392b'
+      'pendiente': '#ffd700',
+      'en_proceso': '#2e86c1',
+      'resuelto': '#27ae60',
+      'rechazado': '#c0392b'
     };
     return colors[status] || '#666';
   };

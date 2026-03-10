@@ -49,7 +49,7 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
       const mockData = [
         {
           id: 1,
-          nombre: 'Obras Públicas',
+          nombre: 'Dirección de Obras Públicas',
           responsable: 'Juan Pérez',
           email: 'juan.perez@ejemplo.com',
           telefono: '555-123-4567',
@@ -58,21 +58,66 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
         },
         {
           id: 2,
-          nombre: 'Servicios Públicos',
+          nombre: 'Dirección de Alumbrado Público',
           responsable: 'María García',
           email: 'maria.garcia@ejemplo.com',
           telefono: '555-987-6543',
           estado: 'Activo',
-          acceso: 'Inactivo'
+          acceso: 'Activo'
         },
         {
           id: 3,
-          nombre: 'Medio Ambiente',
+          nombre: 'Comisión o Dirección de Agua Potable CIAPACOV',
           responsable: 'Carlos López',
           email: 'carlos.lopez@ejemplo.com',
           telefono: '555-456-7890',
-          estado: 'Inactivo',
-          acceso: 'Inactivo'
+          estado: 'Activo',
+          acceso: 'Activo'
+        },
+        {
+          id: 4,
+          nombre: 'Dirección de Servicios Públicos Municipales',
+          responsable: 'Ana Martínez',
+          email: 'ana.martinez@ejemplo.com',
+          telefono: '555-234-5678',
+          estado: 'Activo',
+          acceso: 'Activo'
+        },
+        {
+          id: 5,
+          nombre: 'Dirección de Parques y Jardines',
+          responsable: 'Roberto Sánchez',
+          email: 'roberto.sanchez@ejemplo.com',
+          telefono: '555-345-6789',
+          estado: 'Activo',
+          acceso: 'Activo'
+        },
+        {
+          id: 6,
+          nombre: 'Dirección de Ecología o Medio Ambiente',
+          responsable: 'Laura Hernández',
+          email: 'laura.hernandez@ejemplo.com',
+          telefono: '555-456-7890',
+          estado: 'Activo',
+          acceso: 'Activo'
+        },
+        {
+          id: 7,
+          nombre: 'Dirección de Tránsito o Movilidad Municipal',
+          responsable: 'Miguel Ángel Torres',
+          email: 'miguel.torres@ejemplo.com',
+          telefono: '555-567-8901',
+          estado: 'Activo',
+          acceso: 'Activo'
+        },
+        {
+          id: 8,
+          nombre: 'Protección Civil',
+          responsable: 'Diana Ruiz',
+          email: 'diana.ruiz@ejemplo.com',
+          telefono: '555-678-9012',
+          estado: 'Activo',
+          acceso: 'Activo'
         }
       ];
       setDependencias(mockData);

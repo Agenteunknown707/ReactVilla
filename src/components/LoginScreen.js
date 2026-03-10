@@ -44,7 +44,7 @@ function LoginScreen({ onLogin }) {
         </div>
         <h1 className="sistema-title">Sistema de Gestión de Incidencias</h1>
         <h2 className="ayuntamiento-title">H. AYUNTAMIENTO DE COLIMA</h2>
-        <p className="slogan">HONESTA, TRANSPARENTE Y CERCANA</p>
+        <p className="slogan">OTRO COLIMA POR TI</p>
 
         <div className="login-form">
           {error && <div className="error-message" style={{ color: "red", marginBottom: "1rem" }}>{error}</div>}

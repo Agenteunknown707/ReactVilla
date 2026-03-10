@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FaBell, FaCheck, FaCog, FaTimes, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import logo from "../assets/image.png";
 
+
 // Mock notifications data
 const mockNotifications = {
   all: [
@@ -93,7 +94,7 @@ function Header({ onLogout }) {
       <div className="header-actions">
         <div className="admin-badge">
           <span className="admin-icon">👤</span>
-          <span className="admin-text">Administrador: Sistema</span>
+          <span className="admin-text">Sistema: Administrador</span>
         </div>
 
         <div className="notification-container" ref={notificationRef}>
