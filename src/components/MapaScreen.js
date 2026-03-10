@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { FaSyncAlt, FaInfoCircle } from 'react-icons/fa';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import { API_ENDPOINTS } from '../config/api';
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
 
@@ -86,12 +87,39 @@ const MapaScreen = ({ onNavigate, onLogout }) => {
     cargarIncidencias();
   }, []);
 
-  // Mock function to load incidents (replace with API call)
-  const cargarIncidencias = () => {
+  // Function to load incidents from API
+  const cargarIncidencias = async () => {
     setLoading(true);
     
-    // Simulate API call with mock data
-    setTimeout(() => {
+    try {
+      const response = await fetch(API_ENDPOINTS.INCIDENCIAS);
+      
+      if (!response.ok) {
+        throw new Error('Error al cargar las incidencias');
+      }
+      
+      const data = await response.json();
+      
+      // Filter incidencias that have valid coordinates
+      const incidenciasConCoordenadas = data.filter(incidencia => 
+        incidencia.latitud && incidencia.longitud && 
+        incidencia.latitud !== 0 && incidencia.longitud !== 0
+      ).map(incidencia => ({
+        id: incidencia.id,
+        titulo: incidencia.titulo || incidencia.descripcion || 'Sin título',
+        descripcion: incidencia.descripcion || 'Sin descripción',
+        lat: parseFloat(incidencia.latitud),
+        lng: parseFloat(incidencia.longitud),
+        estado: incidencia.estado || 'Pendiente',
+        fecha: incidencia.fechaCreacion || incidencia.fecha || new Date().toISOString().split('T')[0],
+        direccion: incidencia.ubicacion || incidencia.direccion || 'Sin dirección',
+        categoria: incidencia.categoria || incidencia.tipo || 'General'
+      }));
+      
+      setIncidencias(incidenciasConCoordenadas);
+    } catch (error) {
+      console.error('Error cargando incidencias:', error);
+      // Fallback to mock data if API fails
       const mockIncidencias = [
         {
           id: 1,
@@ -114,45 +142,12 @@ const MapaScreen = ({ onNavigate, onLogout }) => {
           fecha: '2023-05-22',
           direccion: 'Calle Hidalgo #456, Col. Centro',
           categoria: 'Alumbrado Público'
-        },
-        {
-          id: 3,
-          titulo: 'Fuga de agua',
-          descripcion: 'Fuga de agua en la esquina',
-          lat: 19.2389,
-          lng: -103.7241,
-          estado: 'Resuelto',
-          fecha: '2023-05-20',
-          direccion: 'Calle Juárez #789, Col. Centro',
-          categoria: 'Agua Potable'
-        },
-        {
-          id: 4,
-          titulo: 'Recolección de basura',
-          descripcion: 'Basura acumulada en la esquina',
-          lat: 19.2489,
-          lng: -103.7041,
-          estado: 'Cancelado',
-          fecha: '2023-05-18',
-          direccion: 'Calle Madero #101, Col. Centro',
-          categoria: 'Limpieza Pública'
-        },
-        {
-          id: 5,
-          titulo: 'Semáforo dañado',
-          descripcion: 'Semáforo no funciona en la esquina',
-          lat: 19.2589,
-          lng: -103.7241,
-          estado: 'Pendiente',
-          fecha: '2023-05-23',
-          direccion: 'Esq. Av. Morelos y 5 de Mayo',
-          categoria: 'Tránsito'
         }
       ];
-      
       setIncidencias(mockIncidencias);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   // Refresh map data
