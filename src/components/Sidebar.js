@@ -5,7 +5,9 @@ function Sidebar({ activeItem, onNavigate }) {
     { id: 'mapa', icon: '🗺️', label: 'Mapa' },
     { id: 'reportes', icon: '📊', label: 'Reportes' },
     { id: 'dependencias', icon: '🏢', label: 'Dependencias' },
+    { id: 'bitacora', icon: '📋', label: 'Bitácora' },
     { id: 'configuracion', icon: '⚙️', label: 'Configuración' },
+    { id: 'perfil', icon: '👤', label: 'Mi Perfil' },
   ];
 
   return (
@@ -21,6 +23,17 @@ function Sidebar({ activeItem, onNavigate }) {
             <span className="sidebar-text">{item.label}</span>
           </div>
         ))}
+      </div>
+      
+      {/* Logout Button */}
+      <div className="sidebar-logout">
+        <div 
+          className="sidebar-item logout-item"
+          onClick={() => onNavigate('logout')}
+        >
+          <span className="sidebar-icon">🚪</span>
+          <span className="sidebar-text">Cerrar Sesión</span>
+        </div>
       </div>
     </div>
   );

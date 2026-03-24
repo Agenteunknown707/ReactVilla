@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FaBell, FaCheck, FaCog, FaTimes, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import logo from "../assets/image.png";
+import { useDynamicConfig } from '../contexts/DynamicConfigContext';
 
 
 // Mock notifications data
@@ -21,6 +22,7 @@ const mockNotifications = {
 };
 
 function Header({ onLogout }) {
+  const { config } = useDynamicConfig();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
@@ -48,19 +50,18 @@ function Header({ onLogout }) {
   }, []);
 
   const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-    setShowProfileMenu(false);
+    setShowNotifications(!showNotifications)
+    setShowProfileMenu(false)
   };
 
   const toggleProfileMenu = () => {
-    setShowProfileMenu(!showProfileMenu);
-    setShowNotifications(false);
+    setShowProfileMenu(!showProfileMenu)
+    setShowNotifications(false)
   };
 
   const handleProfileClick = () => {
-    // TODO: Implement profile navigation
-    console.log('Navigate to profile');
-    setShowProfileMenu(false);
+    console.log('Navigate to profile')
+    setShowProfileMenu(false)
   };
 
   const markAllAsRead = () => {
@@ -84,10 +85,16 @@ function Header({ onLogout }) {
   return (
     <header className="main-header">
       <div className="header-logo-container">
-        <img src={logo || "/placeholder.svg"} alt="Logo" className="header-logo" />
+        {config.logo ? (
+          <img src={config.logo} alt="Logo" className="header-logo" />
+        ) : (
+          <div className="header-logo-placeholder">
+            {config.systemName.charAt(0)}
+          </div>
+        )}
         <div className="header-title-container">
-          <h1 className="header-title">Sistema de Gestión de Incidencias</h1>
-          <h2 className="header-subtitle">H. AYUNTAMIENTO DE COLIMA</h2>
+          <h1 className="header-title">{config.systemName}</h1>
+          <h2 className="header-subtitle">{config.systemSlogan}</h2>
         </div>
       </div>
 

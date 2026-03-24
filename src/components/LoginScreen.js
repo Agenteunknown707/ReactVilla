@@ -1,8 +1,10 @@
 "use client"
 import { useState } from "react"
 import { API_ENDPOINTS } from "../config/api"
+import { useDynamicConfig } from '../contexts/DynamicConfigContext'
 
 function LoginScreen({ onLogin }) {
+  const { config } = useDynamicConfig()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -33,18 +35,29 @@ function LoginScreen({ onLogin }) {
   }
 
   return (
-    <div className="login-container">
+    <div 
+      className="login-container" 
+      style={{ 
+        backgroundImage: config.loginBackground ? `url(${config.loginBackground})` : undefined 
+      }}
+    >
       <div className="login-card">
         <div className="logo-container">
-          <img
-            src="/colima.png" 
-            alt="Logo Colima"
-            className="logo"
-          />
+          {config.logo ? (
+            <img
+              src={config.logo}
+              alt="Logo Sistema"
+              className="logo"
+            />
+          ) : (
+            <div className="logo-placeholder">
+              {config.systemName.charAt(0)}
+            </div>
+          )}
         </div>
-        <h1 className="sistema-title">Sistema de Gestión de Incidencias</h1>
+        <h1 className="sistema-title">{config.systemName}</h1>
         <h2 className="ayuntamiento-title">H. AYUNTAMIENTO DE COLIMA</h2>
-        <p className="slogan">OTRO COLIMA POR TI</p>
+        <p className="slogan">{config.systemSlogan}</p>
 
         <div className="login-form">
           {error && <div className="error-message" style={{ color: "red", marginBottom: "1rem" }}>{error}</div>}

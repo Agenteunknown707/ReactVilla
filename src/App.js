@@ -9,7 +9,11 @@ import DashboardScreen from "./components/DashboardScreen"
 import ReporteScreen from "./components/ReporteScreen"
 import DependenciasScreen from "./components/DependenciasScreen"
 import MapaScreen from "./components/MapaScreen"
-import Configuracion from "./components/Configuracion"
+import ConfiguracionDinamica from './components/ConfiguracionDinamica'
+import MiPerfil from "./components/MiPerfil"
+import BitacoraScreen from "./components/BitacoraScreen"
+import AppShell from "./components/AppShell"
+import { DynamicConfigProvider } from "./contexts/DynamicConfigContext"
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState("login")
@@ -33,55 +37,108 @@ function App() {
   }
 
   const handleNavigate = (screen) => {
-    setCurrentScreen(screen)
+    if (screen === 'logout') {
+      handleLogout()
+    } else {
+      setCurrentScreen(screen)
+    }
+  }
+
+  const renderCurrentScreen = () => {
+    switch (currentScreen) {
+      case "login":
+        return <LoginScreen onLogin={handleLogin} />
+      
+      case "dashboard":
+        return (
+          <DashboardScreen 
+            onNavigate={handleNavigate}
+            onLogout={handleLogout}
+          />
+        )
+      
+      case "incidencias":
+        return (
+          <IncidenciasScreen 
+            onIncidenciaClick={handleIncidenciaClick} 
+            onLogout={handleLogout}
+            onNavigate={handleNavigate}
+          />
+        )
+      
+      case "detalle":
+        return (
+          <DetalleIncidenciaScreen
+            incidencia={selectedIncidencia}
+            onVolverClick={handleVolverClick}
+            onLogout={handleLogout}
+            onNavigate={handleNavigate}
+          />
+        )
+      
+      case "reportes":
+        return (
+          <ReporteScreen
+            onLogout={handleLogout}
+            onNavigate={handleNavigate}
+          />
+        )
+      
+      case "dependencias":
+        return (
+          <DependenciasScreen
+            onLogout={handleLogout}
+            onNavigate={handleNavigate}
+          />
+        )
+      
+      case "mapa":
+        return (
+          <MapaScreen
+            onLogout={handleLogout}
+            onNavigate={handleNavigate}
+          />
+        )
+      
+      case "configuracion":
+        return (
+          <ConfiguracionDinamica
+            onLogout={handleLogout}
+            onNavigate={handleNavigate}
+          />
+        )
+      
+      case "perfil":
+        return (
+          <MiPerfil onLogout={handleLogout} onNavigate={handleNavigate} />
+        )
+      
+      case "bitacora":
+        return (
+          <BitacoraScreen onLogout={handleLogout} onNavigate={handleNavigate} />
+        )
+      
+      default:
+        return <LoginScreen onLogin={handleLogin} />
+    }
   }
 
   return (
-    <div className="app">
-      {currentScreen === "login" && <LoginScreen onLogin={handleLogin} />}
-      {currentScreen === "dashboard" && (
-        <DashboardScreen 
-          onNavigate={handleNavigate}
-          onLogout={handleLogout}
-        />
-      )}
-      {currentScreen === "incidencias" && (
-        <IncidenciasScreen 
-          onIncidenciaClick={handleIncidenciaClick} 
-          onLogout={handleLogout}
-          onNavigate={handleNavigate}
-        />
-      )}
-      {currentScreen === "detalle" && (
-        <DetalleIncidenciaScreen
-          incidencia={selectedIncidencia}
-          onVolverClick={handleVolverClick}
-          onLogout={handleLogout}
-          onNavigate={handleNavigate}
-        />
-      )}
-      {currentScreen === "reportes" && (
-        <ReporteScreen
-          onLogout={handleLogout}
-          onNavigate={handleNavigate}
-        />
-      )}
-      {currentScreen === "dependencias" && (
-        <DependenciasScreen
-          onLogout={handleLogout}
-          onNavigate={handleNavigate}
-        />
-      )}
-      {currentScreen === "mapa" && (
-        <MapaScreen
-          onLogout={handleLogout}
-          onNavigate={handleNavigate}
-        />
-      )}
-      {currentScreen === "configuracion" && (
-        <Configuracion onLogout={handleLogout} onNavigate={handleNavigate} />
-      )}
-    </div>
+    <DynamicConfigProvider>
+      <div className="app">
+        {currentScreen === "login" ? (
+          renderCurrentScreen()
+        ) : (
+          <AppShell 
+            currentScreen={currentScreen}
+            onNavigate={handleNavigate}
+            onLogout={handleLogout}
+          >
+            {renderCurrentScreen()}
+          </AppShell>
+        )}
+      </div>
+    </DynamicConfigProvider>
   )
 }
 

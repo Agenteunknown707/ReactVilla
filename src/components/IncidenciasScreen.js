@@ -1,7 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
-import Header from "./Header"
-import Sidebar from "./Sidebar"
+import React, { useState, useEffect } from "react"
 import { API_ENDPOINTS } from "../config/api"
 
 function IncidenciasScreen({ onIncidenciaClick, onLogout, onNavigate }) {
@@ -66,28 +64,18 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout, onNavigate }) {
 
   if (loading) {
     return (
-      <div className="main-container">
-        <Sidebar activeItem="incidencias" onNavigate={onNavigate} />
-        <div className="content-container">
-          <Header onLogout={onLogout} />
-          <main className="main-content">
-            <div className="loading-message">Cargando incidencias...</div>
-          </main>
-        </div>
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <span>Cargando incidencias...</span>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="main-container">
-        <Sidebar activeItem="incidencias" onNavigate={onNavigate} />
-        <div className="content-container">
-          <Header onLogout={onLogout} />
-          <main className="main-content">
-            <div className="error-message">{error}</div>
-          </main>
-        </div>
+      <div className="error-container">
+        <div className="error-message">{error}</div>
+        <button onClick={fetchIncidencias} className="btn btn-primary">Reintentar</button>
       </div>
     )
   }
@@ -103,124 +91,125 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout, onNavigate }) {
   });
 
   return (
-    <div className="main-container">
-      <Sidebar activeItem="incidencias" onNavigate={onNavigate} />
-      <div className="content-container">
-        <Header onLogout={onLogout} />
-        <main className="main-content">
-          <div className="incidencias-header">
-            <h1>Incidencias</h1>
-            <div className="header-controls">
-              <div className="search-container">
-                <input 
-                  type="text" 
-                  placeholder="Buscar por ubicación o ID..." 
-                  className="search-input" 
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <button className="search-button">
-                  <i className="search-icon">🔍</i>
-                </button>
-              </div>
-              <div className="filter-container">
-                <select 
-                  className="filter-select"
-                  value={tipoFiltro}
-                  onChange={(e) => setTipoFiltro(e.target.value)}
-                >
-                  <option value="">Todos los tipos</option>
-                  <option value="Bache">Bache</option>
-                  <option value="Alumbrado">Alumbrado público</option>
-                  <option value="Basura">Basura</option>
-                  <option value="Agua">Fuga de agua</option>
-                </select>
-                <select 
-                  className="filter-select"
-                  value={estadoFiltro}
-                  onChange={(e) => setEstadoFiltro(e.target.value)}
-                >
-                  <option value="">Todos los estados</option>
-                  <option value="pendiente">Pendiente</option>
-                  <option value="en_proceso">En Proceso</option>
-                  <option value="resuelto">Resuelto</option>
-                  <option value="rechazado">Rechazado</option>
-                </select>
-              </div>
+    <div className="main-content">
+      <div className="incidencias-header">
+        <h1>Incidencias</h1>
+        <p>Gestión de incidencias reportadas por ciudadanos</p>
+      </div>
+
+      <div className="card">
+        <div className="card-header">
+          <h3 className="card-title">Lista de Incidencias</h3>
+          <div className="header-controls">
+            <div className="search-container">
+              <input 
+                type="text" 
+                placeholder="Buscar por ubicación o ID..." 
+                className="form-control" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button className="btn btn-primary">
+                🔍
+              </button>
+            </div>
+            <div className="filter-container">
+              <select 
+                className="form-control"
+                value={tipoFiltro}
+                onChange={(e) => setTipoFiltro(e.target.value)}
+              >
+                <option value="">Todos los tipos</option>
+                <option value="Bache">Bache</option>
+                <option value="Alumbrado">Alumbrado público</option>
+                <option value="Basura">Basura</option>
+                <option value="Agua">Fuga de agua</option>
+              </select>
+              <select 
+                className="form-control"
+                value={estadoFiltro}
+                onChange={(e) => setEstadoFiltro(e.target.value)}
+              >
+                <option value="">Todos los estados</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="en_proceso">En Proceso</option>
+                <option value="resuelto">Resuelto</option>
+                <option value="rechazado">Rechazado</option>
+              </select>
             </div>
           </div>
+        </div>
 
-          <div className="incidencias-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Tipo</th>
-                  <th>Estado</th>
-                  <th>Ubicación</th>
-                  <th>Fecha</th>
-                  <th>Asignado a</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredIncidencias.length > 0 ? (
-                  filteredIncidencias.map((incidencia) => (
-                    <tr key={incidencia.id}>
-                      <td>{incidencia.id}</td>
-                      <td>{incidencia.tipo}</td>
-                      <td>
-                        {incidencia.estado && (
-                          <span className={`estado-badge ${incidencia.estado.toLowerCase().replace(/\s+/g, "-")}`}>
-                            {incidencia.estado}
-                          </span>
+        <div className="table-responsive">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Ubicación</th>
+                <th>Fecha</th>
+                <th>Asignado a</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredIncidencias.length > 0 ? (
+                filteredIncidencias.map((incidencia) => (
+                  <tr key={incidencia.id}>
+                    <td>{incidencia.id}</td>
+                    <td>{incidencia.tipo}</td>
+                    <td>
+                      {incidencia.estado && (
+                        <span className={`estado-badge ${incidencia.estado.toLowerCase().replace(/\s+/g, "-")}`}>
+                          {incidencia.estado}
+                        </span>
+                      )}
+                    </td>
+                    <td>{incidencia.ubicacion}</td>
+                    <td>{incidencia.fecha}</td>
+                    <td>{incidencia.asignado}</td>
+                    <td>
+                      <div className="actions-dropdown">
+                        <button
+                          className="btn btn-sm btn-secondary"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            toggleDropdown(incidencia.id)
+                          }}
+                        >
+                          ...
+                        </button>
+                        {activeDropdown === incidencia.id && (
+                          <div className="dropdown-menu actions-menu">
+                            <button className="dropdown-item" onClick={() => onIncidenciaClick(incidencia)}>
+                              Ver más detalles
+                            </button>
+                          </div>
                         )}
-                      </td>
-                      <td>{incidencia.ubicacion}</td>
-                      <td>{incidencia.fecha}</td>
-                      <td>{incidencia.asignado}</td>
-                      <td>
-                        <div className="actions-dropdown">
-                          <button
-                            className="action-button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              toggleDropdown(incidencia.id)
-                            }}
-                          >
-                            ...
-                          </button>
-                          {activeDropdown === incidencia.id && (
-                            <div className="dropdown-menu actions-menu">
-                              <option className="dropdown-item" onClick={() => onIncidenciaClick(incidencia)}>
-                                Ver más detalles
-                              </option>
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>
-                      No se encontraron incidencias que coincidan con los filtros
+                      </div>
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>
+                    No se encontraron incidencias que coincidan con los filtros
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-          <div className="pagination">
-            <button className="pagination-button">
-              <span className="arrow">←</span> Anterior
-            </button>
-            <button className="pagination-button">
-              Siguiente <span className="arrow">→</span>
-            </button>
-          </div>
-        </main>
+        <div className="pagination">
+          <button className="btn btn-secondary">
+            ← Anterior
+          </button>
+          <button className="btn btn-secondary">
+            Siguiente →
+          </button>
+        </div>
       </div>
     </div>
   )
