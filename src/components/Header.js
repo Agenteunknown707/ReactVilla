@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaBell, FaCheck, FaCog, FaTimes, FaUser, FaSignOutAlt } from 'react-icons/fa';
-import logo from "../assets/image.png";
+import { FaBell, FaCheck, FaCog, FaTimes, FaMoon, FaSun } from 'react-icons/fa';
 import { useDynamicConfig } from '../contexts/DynamicConfigContext';
-
 
 // Mock notifications data
 const mockNotifications = {
@@ -24,11 +22,32 @@ const mockNotifications = {
 function Header({ onLogout }) {
   const { config } = useDynamicConfig();
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
   const [notifications, setNotifications] = useState(mockNotifications);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const notificationRef = useRef(null);
-  const profileMenuRef = useRef(null);
+
+  // Load dark mode preference
+  useEffect(() => {
+    const savedMode = localStorage.getItem('darkMode') === 'true';
+    setIsDarkMode(savedMode);
+    if (savedMode) {
+      document.body.classList.add('dark-mode');
+    }
+  }, []);
+
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    localStorage.setItem('darkMode', newMode);
+    
+    if (newMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  };
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -36,10 +55,6 @@ function Header({ onLogout }) {
       // Close notifications dropdown
       if (notificationRef.current && !notificationRef.current.contains(event.target)) {
         setShowNotifications(false);
-      }
-      // Close profile menu
-      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
-        setShowProfileMenu(false);
       }
     }
 
@@ -51,17 +66,6 @@ function Header({ onLogout }) {
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications)
-    setShowProfileMenu(false)
-  };
-
-  const toggleProfileMenu = () => {
-    setShowProfileMenu(!showProfileMenu)
-    setShowNotifications(false)
-  };
-
-  const handleProfileClick = () => {
-    console.log('Navigate to profile')
-    setShowProfileMenu(false)
   };
 
   const markAllAsRead = () => {
@@ -99,11 +103,16 @@ function Header({ onLogout }) {
       </div>
 
       <div className="header-actions">
-        <div className="admin-badge">
-          <span className="admin-icon">👤</span>
-          <span className="admin-text">Sistema: Administrador</span>
-        </div>
+        {/* Dark Mode Toggle */}
+        <button 
+          className="dark-mode-toggle"
+          onClick={toggleDarkMode}
+          title={isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+        >
+          {isDarkMode ? <FaSun /> : <FaMoon />}
+        </button>
 
+        {/* Notifications */}
         <div className="notification-container" ref={notificationRef}>
           <button 
             className={`notification-button ${showNotifications ? 'active' : ''}`} 
@@ -220,39 +229,9 @@ function Header({ onLogout }) {
             </div>
           )}
         </div>
-
-        <div className="profile-menu-container" ref={profileMenuRef}>
-          <button 
-            className={`profile-button ${showProfileMenu ? 'active' : ''}`} 
-            onClick={toggleProfileMenu}
-            aria-expanded={showProfileMenu}
-            aria-label="Menú de perfil"
-          >
-            <span className="profile-icon">👤</span>
-          </button>
-          
-          {showProfileMenu && (
-            <div className="profile-dropdown">
-              <button 
-                className="dropdown-item"
-                onClick={handleProfileClick}
-              >
-                <FaUser className="dropdown-icon" />
-                <span>Mi Perfil</span>
-              </button>
-              <button 
-                className="dropdown-item logout"
-                onClick={onLogout}
-              >
-                <FaSignOutAlt className="dropdown-icon" />
-                <span>Cerrar sesión</span>
-              </button>
-            </div>
-          )}
-        </div>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

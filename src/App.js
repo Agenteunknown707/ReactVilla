@@ -12,6 +12,7 @@ import MapaScreen from "./components/MapaScreen"
 import ConfiguracionDinamica from './components/ConfiguracionDinamica'
 import MiPerfil from "./components/MiPerfil"
 import BitacoraScreen from "./components/BitacoraScreen"
+import PanelUsuarios from "./components/PanelUsuarios"
 import AppShell from "./components/AppShell"
 import { DynamicConfigProvider } from "./contexts/DynamicConfigContext"
 
@@ -95,6 +96,14 @@ function App() {
       case "mapa":
         return (
           <MapaScreen
+            onLogout={handleLogout}
+            onNavigate={handleNavigate}
+          />
+        )
+      
+      case "usuarios":
+        return (
+          <PanelUsuarios
             onLogout={handleLogout}
             onNavigate={handleNavigate}
           />

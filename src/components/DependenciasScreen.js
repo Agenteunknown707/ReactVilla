@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaLock, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaLock, FaCheck, FaTimes, FaUsers, FaBuilding, FaUserTag, FaEye } from 'react-icons/fa';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import '../App.css';
+import '../styles/DependenciasUsuarios.css';
 
 const DependenciasScreen = ({ onNavigate, onLogout }) => {
   // State for dependencies list and form
   const [dependencias, setDependencias] = useState([]);
+  const [usuarios, setUsuarios] = useState([]); // New state for users
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -14,6 +16,8 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
   const [dependenciaToDelete, setDependenciaToDelete] = useState(null);
   const [showAccessModal, setShowAccessModal] = useState(false);
   const [currentDependencia, setCurrentDependencia] = useState(null);
+  const [showUsersModal, setShowUsersModal] = useState(false); // New state for users modal
+  const [selectedDependenciaUsers, setSelectedDependenciaUsers] = useState([]); // New state for selected dependency users
   
   // Form state
   const [formData, setFormData] = useState({
@@ -35,17 +39,34 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
   // Form validation errors
   const [errors, setErrors] = useState({});
 
-  // Load dependencies on component mount
+  // Load dependencies and users on component mount
   useEffect(() => {
     cargarDependencias();
+    cargarUsuarios(); // Load users data
   }, []);
 
-  // Mock function to load dependencies (replace with API call)
+  // Mock function to load users (replace with API call)
+  const cargarUsuarios = () => {
+    // Mock users data - same as in PanelUsuarios
+    const mockUsers = [
+      { id: 1, nombre: 'Juan Pérez', correo: 'juan.perez@colima.gob.mx', rol: 'Administrador', dependencia: 'Dirección de Obras Públicas', estado: 'activo', dependencia_id: 1 },
+      { id: 2, nombre: 'María González', correo: 'maria.gonzalez@colima.gob.mx', rol: 'Operador', dependencia: 'Dirección de Servicios Públicos Municipales', estado: 'activo', dependencia_id: 4 },
+      { id: 3, nombre: 'Carlos Rodríguez', correo: 'carlos.rodriguez@colima.gob.mx', rol: 'Usuario', dependencia: 'Protección Civil', estado: 'inactivo', dependencia_id: 8 },
+      { id: 4, nombre: 'Ana Martínez', correo: 'ana.martinez@colima.gob.mx', rol: 'Operador', dependencia: 'Comisión o Dirección de Agua Potable CIAPACOV', estado: 'bloqueado', dependencia_id: 3 },
+      { id: 5, nombre: 'Luis Sánchez', correo: 'luis.sanchez@colima.gob.mx', rol: 'Usuario', dependencia: 'Dirección de Parques y Jardines', estado: 'activo', dependencia_id: 5 },
+      { id: 6, nombre: 'Patricia López', correo: 'patricia.lopez@colima.gob.mx', rol: 'Administrador', dependencia: 'Dirección de Obras Públicas', estado: 'activo', dependencia_id: 1 },
+      { id: 7, nombre: 'Roberto Díaz', correo: 'roberto.diaz@colima.gob.mx', rol: 'Operador', dependencia: 'Dirección de Servicios Públicos Municipales', estado: 'activo', dependencia_id: 4 },
+      { id: 8, nombre: 'Sofía Hernández', correo: 'sofia.hernandez@colima.gob.mx', rol: 'Usuario', dependencia: 'Protección Civil', estado: 'inactivo', dependencia_id: 8 },
+    ];
+    setUsuarios(mockUsers);
+  };
+
+  // Load dependencies on component mount
   const cargarDependencias = () => {
     setLoading(true);
     // Simulate API call
     setTimeout(() => {
-      // Mock data
+      // Mock data with categories
       const mockData = [
         {
           id: 1,
@@ -54,7 +75,8 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
           email: 'juan.perez@ejemplo.com',
           telefono: '555-123-4567',
           estado: 'Activo',
-          acceso: 'Activo'
+          acceso: 'Activo',
+          categorias: ['Baches', 'Señalamiento', 'Alcantarillado', 'Pavimento']
         },
         {
           id: 2,
@@ -63,7 +85,8 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
           email: 'maria.garcia@ejemplo.com',
           telefono: '555-987-6543',
           estado: 'Activo',
-          acceso: 'Activo'
+          acceso: 'Activo',
+          categorias: ['Luminarias', 'Postes', 'Cables', 'Transformadores']
         },
         {
           id: 3,
@@ -72,7 +95,8 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
           email: 'carlos.lopez@ejemplo.com',
           telefono: '555-456-7890',
           estado: 'Activo',
-          acceso: 'Activo'
+          acceso: 'Activo',
+          categorias: ['Fugas', 'Conexiones', 'Calidad del Agua', 'Tuberías']
         },
         {
           id: 4,
@@ -81,7 +105,8 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
           email: 'ana.martinez@ejemplo.com',
           telefono: '555-234-5678',
           estado: 'Activo',
-          acceso: 'Activo'
+          acceso: 'Activo',
+          categorias: ['Limpieza', 'Alumbrado', 'Parques', 'Basura']
         },
         {
           id: 5,
@@ -90,7 +115,8 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
           email: 'roberto.sanchez@ejemplo.com',
           telefono: '555-345-6789',
           estado: 'Activo',
-          acceso: 'Activo'
+          acceso: 'Activo',
+          categorias: ['Mantenimiento', 'Riego', 'Podas', 'Jardinería']
         },
         {
           id: 6,
@@ -99,7 +125,8 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
           email: 'laura.hernandez@ejemplo.com',
           telefono: '555-456-7890',
           estado: 'Activo',
-          acceso: 'Activo'
+          acceso: 'Activo',
+          categorias: ['Reciclaje', 'Contaminación', 'Conservación', 'Educación Ambiental']
         },
         {
           id: 7,
@@ -108,7 +135,8 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
           email: 'miguel.torres@ejemplo.com',
           telefono: '555-567-8901',
           estado: 'Activo',
-          acceso: 'Activo'
+          acceso: 'Activo',
+          categorias: ['Señales', 'Semáforos', 'Velocidad', 'Estacionamiento']
         },
         {
           id: 8,
@@ -117,12 +145,46 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
           email: 'diana.ruiz@ejemplo.com',
           telefono: '555-678-9012',
           estado: 'Activo',
-          acceso: 'Activo'
+          acceso: 'Activo',
+          categorias: ['Emergencias', 'Prevención', 'Evacuación', 'Simulacros']
         }
       ];
       setDependencias(mockData);
       setLoading(false);
     }, 500);
+  };
+
+  // Get users for a specific dependency
+  const getUsuariosPorDependencia = (dependenciaId) => {
+    return usuarios.filter(usuario => usuario.dependencia_id === dependenciaId);
+  };
+
+  // Handle showing users modal
+  const handleShowUsers = (dependencia) => {
+    const usuariosDeDependencia = getUsuariosPorDependencia(dependencia.id);
+    setSelectedDependenciaUsers(usuariosDeDependencia);
+    setCurrentDependencia(dependencia);
+    setShowUsersModal(true);
+  };
+
+  // Get estado badge class
+  const getEstadoBadgeClass = (estado) => {
+    const classes = {
+      activo: 'estado-activo',
+      inactivo: 'estado-inactivo',
+      bloqueado: 'estado-bloqueado'
+    };
+    return classes[estado] || 'estado-inactivo';
+  };
+
+  // Get rol badge class
+  const getRolBadgeClass = (rol) => {
+    const classes = {
+      administrador: 'rol-administrador',
+      operador: 'rol-operador',
+      usuario: 'rol-usuario'
+    };
+    return classes[rol.toLowerCase()] || 'rol-usuario';
   };
 
   // Handle form input changes
@@ -345,6 +407,8 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
                   <th>Responsable</th>
                   <th>Email</th>
                   <th>Teléfono</th>
+                  <th>Usuarios</th>
+                  <th>Categorías</th>
                   <th>Estado</th>
                   <th>Acceso</th>
                   <th>Acciones</th>
@@ -353,60 +417,118 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="7" className="loading-cell">Cargando dependencias...</td>
+                    <td colSpan="9" className="loading-cell">Cargando dependencias...</td>
                   </tr>
                 ) : dependencias.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="no-data">No hay dependencias registradas</td>
+                    <td colSpan="9" className="no-data">No hay dependencias registradas</td>
                   </tr>
                 ) : (
-                  dependencias.map((dependencia) => (
-                    <tr key={dependencia.id}>
-                      <td>{dependencia.nombre}</td>
-                      <td>{dependencia.responsable}</td>
-                      <td>{dependencia.email}</td>
-                      <td>{dependencia.telefono}</td>
-                      <td>
-                        <span 
-                          className={`status-badge ${dependencia.estado === 'Activo' ? 'active' : 'inactive'}`}
-                          onClick={() => toggleStatus(dependencia.id)}
-                        >
-                          {dependencia.estado}
-                        </span>
-                      </td>
-                      <td>
-                        <span 
-                          className={`access-badge ${dependencia.acceso === 'Activo' ? 'active' : 'inactive'}`}
-                          onClick={() => toggleAccessStatus(dependencia.id)}
-                        >
-                          {dependencia.acceso === 'Activo' ? 'Acceso Activo' : 'Acceso Restringido'}
-                        </span>
-                      </td>
-                      <td className="actions">
-                        <button 
-                          className=" btn btn-icon" 
-                          onClick={() => handleEdit(dependencia)}
-                          title="Editar"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button 
-                          className=" btn btn-icon btn-delete" 
-                          onClick={() => handleDeleteClick(dependencia)}
-                          title="Eliminar"
-                        >
-                          <FaTrash />
-                        </button>
-                        <button 
-                          className=" btn btn-icon btn-access" 
-                          onClick={() => handleAccessClick(dependencia)}
-                          title="Gestionar Acceso"
-                        >
-                          <FaLock />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                  dependencias.map((dependencia) => {
+                    const usuariosDeDependencia = getUsuariosPorDependencia(dependencia.id);
+                    return (
+                      <tr key={dependencia.id}>
+                        <td>
+                          <div className="dependencia-nombre">
+                            <FaBuilding className="dependencia-icon" />
+                            {dependencia.nombre}
+                          </div>
+                        </td>
+                        <td>{dependencia.responsable}</td>
+                        <td>{dependencia.email}</td>
+                        <td>{dependencia.telefono}</td>
+                        <td>
+                          <div className="usuarios-info">
+                            <button 
+                              className="usuarios-btn"
+                              onClick={() => handleShowUsers(dependencia)}
+                              title="Ver usuarios asignados"
+                            >
+                              <FaUsers />
+                              <span>{usuariosDeDependencia.length}</span>
+                              <FaEye className="eye-icon" />
+                            </button>
+                            <div className="usuarios-estados">
+                              {usuariosDeDependencia.filter(u => u.estado === 'activo').length > 0 && (
+                                <span className="estado-activo">
+                                  {usuariosDeDependencia.filter(u => u.estado === 'activo').length} activos
+                                </span>
+                              )}
+                              {usuariosDeDependencia.filter(u => u.estado === 'inactivo').length > 0 && (
+                                <span className="estado-inactivo">
+                                  {usuariosDeDependencia.filter(u => u.estado === 'inactivo').length} inactivos
+                                </span>
+                              )}
+                              {usuariosDeDependencia.filter(u => u.estado === 'bloqueado').length > 0 && (
+                                <span className="estado-bloqueado">
+                                  {usuariosDeDependencia.filter(u => u.estado === 'bloqueado').length} bloqueados
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="categorias-info">
+                            {dependencia.categorias?.length > 0 ? (
+                              <div className="categorias-list">
+                                {dependencia.categorias.slice(0, 2).map((categoria, index) => (
+                                  <span key={index} className="categoria-chip">
+                                    {categoria}
+                                  </span>
+                                ))}
+                                {dependencia.categorias.length > 2 && (
+                                  <span className="categoria-mas">
+                                    +{dependencia.categorias.length - 2} más
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="sin-categorias">Sin categorías</span>
+                            )}
+                          </div>
+                        </td>
+                        <td>
+                          <span 
+                            className={`status-badge ${dependencia.estado === 'Activo' ? 'active' : 'inactive'}`}
+                            onClick={() => toggleStatus(dependencia.id)}
+                          >
+                            {dependencia.estado}
+                          </span>
+                        </td>
+                        <td>
+                          <span 
+                            className={`access-badge ${dependencia.acceso === 'Activo' ? 'active' : 'inactive'}`}
+                            onClick={() => toggleAccessStatus(dependencia.id)}
+                          >
+                            {dependencia.acceso === 'Activo' ? 'Acceso Activo' : 'Acceso Restringido'}
+                          </span>
+                        </td>
+                        <td className="actions">
+                          <button 
+                            className="btn btn-icon" 
+                            onClick={() => handleEdit(dependencia)}
+                            title="Editar"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button 
+                            className="btn btn-icon btn-delete" 
+                            onClick={() => handleDeleteClick(dependencia)}
+                            title="Eliminar"
+                          >
+                            <FaTrash />
+                          </button>
+                          <button 
+                            className=" btn btn-icon btn-access" 
+                            onClick={() => handleAccessClick(dependencia)}
+                            title="Gestionar Acceso"
+                          >
+                            <FaLock />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
@@ -616,6 +738,126 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {/* Users Modal */}
+          {showUsersModal && currentDependencia && (
+            <div className="modal-overlay">
+              <div className="modal modal-large">
+                <div className="modal-header">
+                  <div className="modal-title">
+                    <h2 className="archivo-black-regular">
+                      <FaUsers /> Usuarios de {currentDependencia.nombre}
+                    </h2>
+                    <p className="inter-regular">
+                      {selectedDependenciaUsers.length} usuarios asignados
+                    </p>
+                  </div>
+                  <button 
+                    className="modal-close"
+                    onClick={() => setShowUsersModal(false)}
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="modal-body">
+                  {selectedDependenciaUsers.length === 0 ? (
+                    <div className="empty-state">
+                      <FaUserTag className="empty-icon" />
+                      <h3 className="archivo-black-regular">No hay usuarios asignados</h3>
+                      <p className="inter-regular">
+                        Esta dependencia no tiene usuarios asignados actualmente.
+                      </p>
+                      <button 
+                        className="btn btn-primary"
+                        onClick={() => {
+                          setShowUsersModal(false);
+                          onNavigate('usuarios');
+                        }}
+                      >
+                        <FaPlus /> Asignar Usuarios
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="usuarios-list">
+                      {selectedDependenciaUsers.map(usuario => (
+                        <div key={usuario.id} className="usuario-item">
+                          <div className="usuario-avatar">
+                            <FaUserTag />
+                          </div>
+                          <div className="usuario-info">
+                            <h4 className="inter-semibold">{usuario.nombre}</h4>
+                            <p className="inter-regular text-secondary">{usuario.correo}</p>
+                            <div className="usuario-meta">
+                              <span className={`rol-badge ${getRolBadgeClass(usuario.rol)}`}>
+                                {usuario.rol}
+                              </span>
+                              <span className={`estado-badge ${getEstadoBadgeClass(usuario.estado)}`}>
+                                {usuario.estado}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="usuario-actions">
+                            <button 
+                              className="btn btn-sm btn-secondary"
+                              onClick={() => {
+                                setShowUsersModal(false);
+                                onNavigate('usuarios');
+                              }}
+                              title="Ir a Panel de Usuarios"
+                            >
+                              <FaEye /> Ver Detalles
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Categorías de la Dependencia */}
+                  <div className="categorias-seccion">
+                    <h4 className="archivo-black-regular">Categorías Asociadas</h4>
+                    <div className="categorias-grid">
+                      {currentDependencia.categorias?.length > 0 ? (
+                        currentDependencia.categorias.map((categoria, index) => (
+                          <div key={index} className="categoria-item">
+                            <FaBuilding className="categoria-icon" />
+                            <span className="inter-medium">{categoria}</span>
+                            <span className="categoria-readonly">Solo lectura</span>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="inter-regular text-muted">
+                          No hay categorías configuradas para esta dependencia.
+                        </p>
+                      )}
+                    </div>
+                    <div className="categorias-note">
+                      <p className="inter-regular text-muted">
+                        <strong>Nota:</strong> Las categorías se gestionan desde el dashboard específico de cada dependencia y no pueden editarse desde esta vista.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button 
+                    className="btn btn-secondary"
+                    onClick={() => setShowUsersModal(false)}
+                  >
+                    Cerrar
+                  </button>
+                  <button 
+                    className="btn btn-primary"
+                    onClick={() => {
+                      setShowUsersModal(false);
+                      onNavigate('usuarios');
+                    }}
+                  >
+                    <FaUsers /> Ir a Panel de Usuarios
+                  </button>
+                </div>
               </div>
             </div>
           )}

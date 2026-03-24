@@ -5,6 +5,7 @@ function Sidebar({ activeItem, onNavigate }) {
     { id: 'mapa', icon: '🗺️', label: 'Mapa' },
     { id: 'reportes', icon: '📊', label: 'Reportes' },
     { id: 'dependencias', icon: '🏢', label: 'Dependencias' },
+    { id: 'usuarios', icon: '👥', label: 'Panel de Usuarios' },
     { id: 'bitacora', icon: '📋', label: 'Bitácora' },
     { id: 'configuracion', icon: '⚙️', label: 'Configuración' },
     { id: 'perfil', icon: '👤', label: 'Mi Perfil' },
