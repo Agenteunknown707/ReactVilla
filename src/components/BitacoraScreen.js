@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaCalendarAlt, FaUser, FaCog, FaFileAlt, FaSort, FaSortUp, FaSortDown, FaSync, FaTrash, FaEye } from 'react-icons/fa';
-import Header from './Header';
 import Sidebar from './Sidebar';
 import '../App.css';
 
@@ -177,7 +176,6 @@ function BitacoraScreen({ onNavigate, onLogout }) {
     <div className="main-container">
       <Sidebar activeItem="bitacora" onNavigate={onNavigate} />
       <div className="content-container">
-        <Header onLogout={onLogout} />
         <main className="main-content">
           <div className="bitacora-header">
             <h1>Bitácora del Sistema</h1>

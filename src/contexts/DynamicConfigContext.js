@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 // Configuración inicial del sistema
 const initialConfig = {
@@ -51,48 +51,120 @@ export const DynamicConfigProvider = ({ children }) => {
   const [config, setConfig] = useState(initialConfig)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Cargar configuración desde localStorage al iniciar
-  useEffect(() => {
-    const savedConfig = localStorage.getItem('dynamicConfig')
-    if (savedConfig) {
-      try {
-        const parsedConfig = JSON.parse(savedConfig)
-        setConfig({ ...initialConfig, ...parsedConfig })
-      } catch (error) {
-        console.error('Error al cargar configuración:', error)
+  // Función para aplicar variables CSS
+  const applyCSSVariables = useCallback((config) => {
+    try {
+      const root = document.documentElement
+      
+      // Variables de color
+      root.style.setProperty('--dynamic-primary-color', config.primaryColor)
+      root.style.setProperty('--dynamic-secondary-color', config.secondaryColor)
+      root.style.setProperty('--dynamic-primary-hover', adjustColor(config.primaryColor, -10))
+      root.style.setProperty('--dynamic-primary-light', adjustColor(config.primaryColor, 80))
+      
+      // Variables de imagen
+      if (config.logo) {
+        root.style.setProperty('--dynamic-logo', `url(${config.logo})`)
       }
+      
+      // Variables de texto
+      root.style.setProperty('--dynamic-system-name', `"${config.systemName}"`)
+      root.style.setProperty('--dynamic-system-slogan', `"${config.systemSlogan}"`)
+    } catch (error) {
+      console.error('Error al aplicar variables CSS:', error)
     }
-    setIsLoading(false)
   }, [])
 
-  // Guardar configuración en localStorage cuando cambia
+  // Función para limpiar localStorage si está lleno
+  const cleanLocalStorage = useCallback(() => {
+    try {
+      // Obtener todas las claves de localStorage
+      const keys = Object.keys(localStorage)
+      let totalSize = 0
+      
+      // Calcular tamaño total
+      keys.forEach(key => {
+        const value = localStorage.getItem(key)
+        if (value) {
+          totalSize += key.length + value.length
+        }
+      })
+      
+      // Si el tamaño es mayor a 4MB, limpiar items antiguos
+      if (totalSize > 4 * 1024 * 1024) {
+        console.log('Limpiando localStorage para evitar quota exceeded')
+        // Mantener solo configuración esencial
+        const essentialKeys = ['dynamicConfig', 'darkMode', 'authToken']
+        keys.forEach(key => {
+          if (!essentialKeys.includes(key)) {
+            localStorage.removeItem(key)
+          }
+        })
+      }
+    } catch (error) {
+      console.error('Error al limpiar localStorage:', error)
+    }
+  }, [])
+
+  // Función segura para guardar en localStorage
+  const safeLocalStorageSet = useCallback((key, value) => {
+    try {
+      cleanLocalStorage()
+      localStorage.setItem(key, value)
+    } catch (error) {
+      if (error.name === 'QuotaExceededError') {
+        console.error('Quota exceeded, limpiando localStorage completamente')
+        // Limpiar todo excepto items críticos
+        const keys = Object.keys(localStorage)
+        keys.forEach(key => {
+          if (key !== 'authToken') {
+            localStorage.removeItem(key)
+          }
+        })
+        // Intentar guardar solo lo esencial
+        try {
+          localStorage.setItem(key, value)
+        } catch (secondError) {
+          console.error('No se pudo guardar ni después de limpiar:', secondError)
+        }
+      }
+    }
+  }, [cleanLocalStorage])
+
+  // Cargar configuración desde localStorage al iniciar
+  useEffect(() => {
+    try {
+      const savedConfig = localStorage.getItem('dynamicConfig')
+      if (savedConfig) {
+        const parsedConfig = JSON.parse(savedConfig)
+        setConfig({ ...initialConfig, ...parsedConfig })
+      }
+    } catch (error) {
+      console.error('Error al cargar configuración:', error)
+      // Limpiar localStorage si hay corrupción
+      localStorage.removeItem('dynamicConfig')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+
+  // Guardar configuración en localStorage cuando cambia (con debounce)
   useEffect(() => {
     if (!isLoading) {
-      localStorage.setItem('dynamicConfig', JSON.stringify(config))
-      // Aplicar variables CSS dinámicamente
-      applyCSSVariables(config)
-    }
-  }, [config, isLoading])
+      // Usar un timeout para evitar demasiadas escrituras
+      const timeoutId = setTimeout(() => {
+        try {
+          safeLocalStorageSet('dynamicConfig', JSON.stringify(config))
+          // Aplicar variables CSS dinámicamente
+          applyCSSVariables(config)
+        } catch (error) {
+          console.error('Error al guardar configuración:', error)
+        }
+      }, 300) // 300ms debounce
 
-  // Función para aplicar variables CSS
-  const applyCSSVariables = (config) => {
-    const root = document.documentElement
-    
-    // Variables de color
-    root.style.setProperty('--dynamic-primary-color', config.primaryColor)
-    root.style.setProperty('--dynamic-secondary-color', config.secondaryColor)
-    root.style.setProperty('--dynamic-primary-hover', adjustColor(config.primaryColor, -10))
-    root.style.setProperty('--dynamic-primary-light', adjustColor(config.primaryColor, 80))
-    
-    // Variables de imagen
-    if (config.logo) {
-      root.style.setProperty('--dynamic-logo', `url(${config.logo})`)
+      return () => clearTimeout(timeoutId)
     }
-    
-    // Variables de texto
-    root.style.setProperty('--dynamic-system-name', `"${config.systemName}"`)
-    root.style.setProperty('--dynamic-system-slogan', `"${config.systemSlogan}"`)
-  }
+  }, [config, isLoading, safeLocalStorageSet, applyCSSVariables])
 
   // Función para ajustar el brillo de un color
   const adjustColor = (color, percent) => {

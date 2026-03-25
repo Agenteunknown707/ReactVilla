@@ -303,21 +303,6 @@ function PanelUsuarios({ onNavigate, onLogout }) {
 
   return (
     <div className="main-content">
-      <div className="panel-usuarios-header">
-        <div className="header-content">
-          <h1 className="archivo-black-regular">Panel de Usuarios</h1>
-          <p className="inter-regular">Gestión de usuarios y asignación a dependencias</p>
-        </div>
-        <div className="header-actions">
-          <button 
-            className="btn btn-primary"
-            onClick={handleCreateUser}
-          >
-            <FaPlus /> Crear Usuario
-          </button>
-        </div>
-      </div>
-
       <div className="panel-usuarios-controls">
         <div className="search-box">
           <FaSearch className="search-icon" />

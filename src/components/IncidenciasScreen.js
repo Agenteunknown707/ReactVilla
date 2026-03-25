@@ -92,11 +92,6 @@ function IncidenciasScreen({ onIncidenciaClick, onLogout, onNavigate }) {
 
   return (
     <div className="main-content">
-      <div className="incidencias-header">
-        <h1>Incidencias</h1>
-        <p>Gestión de incidencias reportadas por ciudadanos</p>
-      </div>
-
       <div className="card">
         <div className="card-header">
           <h3 className="card-title">Lista de Incidencias</h3>

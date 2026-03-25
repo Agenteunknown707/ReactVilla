@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { FaUser, FaEnvelope, FaLock, FaSave, FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
-import Header from './Header';
 import Sidebar from './Sidebar';
 import '../App.css';
 
@@ -190,7 +189,6 @@ function MiPerfil({ onNavigate, onLogout }) {
     <div className="main-container">
       <Sidebar activeItem="perfil" onNavigate={onNavigate} />
       <div className="content-container">
-        <Header onLogout={onLogout} />
         <main className="main-content">
           <div className="perfil-header">
             <h1>Mi Perfil</h1>

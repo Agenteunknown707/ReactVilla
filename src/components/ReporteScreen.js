@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { FaFilePdf, FaFileExcel, FaDownload, FaEye, FaSpinner } from 'react-icons/fa';
-import Header from './Header';
 import Sidebar from './Sidebar';
 import '../App.css';
 
@@ -128,7 +127,6 @@ const ReporteScreen = ({ onNavigate, onLogout }) => {
     <div className="main-container">
       <Sidebar activeItem="reportes" onNavigate={onNavigate} />
       <div className="content-container">
-        <Header onLogout={onLogout} />
         <main className="main-content">
           <div className="reporte-header">
             <h1>Generador de Reportes</h1>

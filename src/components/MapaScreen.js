@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { FaSyncAlt, FaInfoCircle } from 'react-icons/fa';
-import Header from './Header';
 import Sidebar from './Sidebar';
 import { API_ENDPOINTS } from '../config/api';
 import 'leaflet/dist/leaflet.css';
@@ -170,7 +169,6 @@ const MapaScreen = ({ onNavigate, onLogout }) => {
     <div className="main-container">
       <Sidebar activeItem="mapa" onNavigate={onNavigate} />
       <div className="content-container">
-        <Header onLogout={onLogout} />
         <main className="main-content">
           <div className="mapa-header">
             <h1>Mapa de Incidencias</h1>

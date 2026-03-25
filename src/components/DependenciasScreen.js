@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaLock, FaCheck, FaTimes, FaUsers, FaBuilding, FaUserTag, FaEye } from 'react-icons/fa';
-import Header from './Header';
 import Sidebar from './Sidebar';
 import '../App.css';
 import '../styles/DependenciasUsuarios.css';
@@ -376,7 +375,6 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
     <div className="main-container">
       <Sidebar activeItem="dependencias" onNavigate={onNavigate} />
       <div className="content-container">
-        <Header onLogout={onLogout} />
         <main className="main-content">
           <div className="dependencias-header">
             <h1>Gestión de Dependencias</h1>

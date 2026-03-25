@@ -318,33 +318,28 @@ function DashboardScreen({ onNavigate, onLogout }) {
 
   return (
     <div className="main-content">
-      <div className="dashboard-header">
-        <h1>Dashboard Analítico</h1>
-        <p>Panel de control para toma de decisiones operativas</p>
+      <div className="dashboard-controls">
+        <select 
+          className="form-control"
+          value={timeRange}
+          onChange={(e) => setTimeRange(e.target.value)}
+        >
+          <option value="7d">Últimos 7 días</option>
+          <option value="30d">Últimos 30 días</option>
+          <option value="90d">Últimos 90 días</option>
+        </select>
         
-        <div className="dashboard-controls">
-          <select 
-            className="form-control"
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}
-          >
-            <option value="7d">Últimos 7 días</option>
-            <option value="30d">Últimos 30 días</option>
-            <option value="90d">Últimos 90 días</option>
-          </select>
-          
-          <select 
-            className="form-control"
-            value={selectedDependency}
-            onChange={(e) => setSelectedDependency(e.target.value)}
-          >
-            <option value="all">Todas las dependencias</option>
-            <option value="obras">Obras Públicas</option>
-            <option value="servicios">Servicios Públicos</option>
-            <option value="proteccion">Protección Civil</option>
-            <option value="agua">Agua Potable</option>
-          </select>
-        </div>
+        <select 
+          className="form-control"
+          value={selectedDependency}
+          onChange={(e) => setSelectedDependency(e.target.value)}
+        >
+          <option value="all">Todas las dependencias</option>
+          <option value="obras">Obras Públicas</option>
+          <option value="servicios">Servicios Públicos</option>
+          <option value="proteccion">Protección Civil</option>
+          <option value="agua">Agua Potable</option>
+        </select>
       </div>
 
       {/* KPIs Principales */}

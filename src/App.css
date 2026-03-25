@@ -853,8 +853,83 @@ h6 {
 }
 
 .dark-mode .header-logo-placeholder {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  color: #cbd5e1;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .header-logo-placeholder:hover {
+  background: linear-gradient(135deg, #334155 0%, #1e293b 50%, #334155 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode .header-title {
+  color: #f1f5f9;
+}
+
+.dark-mode .header-subtitle {
+  color: #94a3b8;
+}
+
+/* ===================================
+   HEADER LOGO - RESPONSIVE
+   =================================== */
+
+@media (max-width: 768px) {
+  .header-logo-container {
+    gap: 12px;
+    padding: 6px 0;
+  }
+  
+  .header-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  
+  .header-logo-placeholder {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+  
+  .header-title {
+    font-size: 16px;
+  }
+  
+  .header-subtitle {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-logo-container {
+    gap: 10px;
+    padding: 4px 0;
+  }
+  
+  .header-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+  
+  .header-logo-placeholder {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+  
+  .header-title {
+    font-size: 15px;
+  }
+  
+  .header-subtitle {
+    font-size: 11px;
+  }
 }
 
 .dark-mode .card {
@@ -1335,37 +1410,53 @@ h6 {
 .header-logo-container {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 16px;
+  padding: 8px 0;
 }
 
 .header-logo {
-  width: 45px;
-  height: 45px;
-  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 45, 114, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid rgba(0, 45, 114, 0.1);
+}
+
+.header-logo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 45, 114, 0.25);
+  border-color: rgba(0, 45, 114, 0.2);
 }
 
 .header-title-container {
   display: flex;
   flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .header-title {
   font-family: var(--font-display);
   font-size: 18px;
-  font-weight: 900;
-  color: #2c3e50;
+  font-weight: 700;
+  color: var(--dynamic-primary-color, #002D72);
   margin: 0;
   line-height: 1.2;
+  letter-spacing: -0.02em;
+  transition: color 0.3s ease;
 }
 
 .header-subtitle {
-  font-family: var(--font-primary);
-  font-size: 12px;
-  font-weight: 600;
-  color: #002D72;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.3;
+  font-family: "Inter", sans-serif;
+  letter-spacing: 0.01em;
+  transition: color 0.3s ease;
 }
 
 .header-actions {
@@ -1873,19 +1964,45 @@ h6 {
    DYNAMIC CONFIG STYLES
    =================================== */
 
-/* Logo Placeholder */
+/* Logo Placeholder - Enhanced Design */
 .header-logo-placeholder {
-  width: 45px;
-  height: 45px;
-  background: linear-gradient(135deg, #002D72 0%, #0044a3 100%);
-  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--dynamic-primary-color, #002D72) 0%, var(--dynamic-primary-hover, #0044a3) 50%, var(--dynamic-primary-color, #002D72) 100%);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 18px;
-  font-weight: 600;
-  text-transform: uppercase;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 45, 114, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.header-logo-placeholder::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.header-logo-placeholder:hover::before {
+  left: 100%;
+}
+
+.header-logo-placeholder:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 45, 114, 0.25);
+  background: linear-gradient(135deg, var(--dynamic-primary-hover, #0044a3) 0%, var(--dynamic-primary-color, #002D72) 50%, var(--dynamic-primary-hover, #0044a3) 100%);
 }
 
 .login-card .logo-placeholder {
