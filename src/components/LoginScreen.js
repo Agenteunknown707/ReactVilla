@@ -4,7 +4,7 @@ import { API_ENDPOINTS } from "../config/api"
 import { useDynamicConfig } from '../contexts/DynamicConfigContext'
 
 function LoginScreen({ onLogin }) {
-  const { config } = useDynamicConfig()
+  const { config, getCurrentMunicipality } = useDynamicConfig()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -56,7 +56,7 @@ function LoginScreen({ onLogin }) {
           )}
         </div>
         <h1 className="sistema-title">{config.systemName}</h1>
-        <h2 className="ayuntamiento-title">H. AYUNTAMIENTO DE COLIMA</h2>
+        <h2 className="ayuntamiento-title">H. AYUNTAMIENTO DE {getCurrentMunicipality().label.toUpperCase()}</h2>
         <p className="slogan">{config.systemSlogan}</p>
 
         <div className="login-form">
