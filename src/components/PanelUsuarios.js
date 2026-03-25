@@ -141,17 +141,28 @@ function PanelUsuarios({ onNavigate, onLogout }) {
       // Simular llamada API
       console.log('Guardando usuario:', formData);
       
-      // Actualizar lista de usuarios
       if (isEdit) {
-        setUsers(users.map(u => u.id === selectedUser.id ? { ...u, ...formData } : u));
+        // Actualizar usuario existente
+        setUsers(prevUsers => 
+          prevUsers.map(user => 
+            user.id === selectedUser.id 
+              ? { ...user, ...formData }
+              : user
+          )
+        );
+        setShowEditModal(false);
       } else {
-        const newUser = { ...formData, id: users.length + 1 };
-        setUsers([...users, newUser]);
+        // Crear nuevo usuario
+        const newUser = {
+          id: users.length + 1,
+          ...formData,
+          dependencia: dependencies.find(d => d.id === parseInt(formData.dependencia_id))?.nombre || 'Sin asignar'
+        };
+        setUsers(prevUsers => [...prevUsers, newUser]);
+        setShowCreateModal(false);
       }
-
-      // Cerrar modal y limpiar formulario
-      setShowCreateModal(false);
-      setShowEditModal(false);
+      
+      // Reset form
       setFormData({
         nombre: '',
         correo: '',
@@ -160,31 +171,67 @@ function PanelUsuarios({ onNavigate, onLogout }) {
         dependencia_id: '',
         estado: 'activo'
       });
-      setSelectedUser(null);
-
-      alert(`Usuario ${isEdit ? 'actualizado' : 'creado'} exitosamente`);
+      
+      alert(isEdit ? 'Usuario actualizado exitosamente' : 'Usuario creado exitosamente');
     } catch (error) {
+      console.error('Error al guardar usuario:', error);
       alert('Error al guardar usuario');
     }
   };
 
-  const handleToggleUserState = (userId, currentState) => {
-    const confirmMessage = currentState === 'activo' 
-      ? '¿Está seguro de desactivar este usuario?' 
-      : '¿Está seguro de activar este usuario?';
-    
-    if (window.confirm(confirmMessage)) {
-      const newState = currentState === 'activo' ? 'inactivo' : 'activo';
-      setUsers(users.map(u => u.id === userId ? { ...u, estado: newState } : u));
-      alert(`Usuario ${newState === 'activo' ? 'activado' : 'desactivado'} exitosamente`);
+  const handleDeleteUser = (user) => {
+    if (window.confirm(`¿Está seguro de que desea eliminar al usuario "${user.nombre}"? Esta acción no se puede deshacer.`)) {
+      try {
+        setUsers(prevUsers => prevUsers.filter(u => u.id !== user.id));
+        alert('Usuario eliminado exitosamente');
+      } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+        alert('Error al eliminar usuario');
+      }
     }
   };
 
-  const handleBlockUser = (userId) => {
-    if (window.confirm('¿Está seguro de bloquear este usuario?')) {
-      setUsers(users.map(u => u.id === userId ? { ...u, estado: 'bloqueado' } : u));
-      alert('Usuario bloqueado exitosamente');
+  const handleToggleUserState = (user, newState) => {
+    const stateMessages = {
+      'activo': 'activar',
+      'inactivo': 'inactivar', 
+      'bloqueado': 'bloquear'
+    };
+    
+    const action = stateMessages[newState];
+    if (window.confirm(`¿Está seguro de que desea ${action} al usuario "${user.nombre}"?`)) {
+      try {
+        setUsers(prevUsers => 
+          prevUsers.map(u => 
+            u.id === user.id 
+              ? { ...u, estado: newState }
+              : u
+          )
+        );
+        alert(`Usuario ${action}do exitosamente`);
+      } catch (error) {
+        console.error(`Error al ${action} usuario:`, error);
+        alert(`Error al ${action} usuario`);
+      }
     }
+  };
+
+  const handleBlockUser = (user) => {
+    handleToggleUserState(user, 'bloqueado');
+  };
+
+  const handleActivateUser = (user) => {
+    handleToggleUserState(user, 'activo');
+  };
+
+  const handleInactivateUser = (user) => {
+    handleToggleUserState(user, 'inactivo');
+  };
+
+  // Función para obtener dependencia por ID
+  const getDependencyName = (dependencyId) => {
+    const dependency = dependencies.find(d => d.id === parseInt(dependencyId));
+    return dependency ? dependency.nombre : 'Sin asignar';
   };
 
   const handleViewDependency = (dependency) => {
@@ -315,6 +362,13 @@ function PanelUsuarios({ onNavigate, onLogout }) {
           />
         </div>
         
+        <button 
+          className="btn btn-primary"
+          onClick={handleCreateUser}
+        >
+          <FaPlus /> Crear Usuario
+        </button>
+        
         <div className="dependencies-quick-access">
           <span className="inter-medium">Dependencias:</span>
           {dependencies.map(dep => (
@@ -429,18 +483,55 @@ function PanelUsuarios({ onNavigate, onLogout }) {
                         >
                           <FaEdit />
                         </button>
-                        <button 
-                          className="btn btn-sm btn-warning"
-                          onClick={() => handleToggleUserState(user.id, user.estado)}
-                          title={user.estado === 'activo' ? 'Desactivar' : 'Activar'}
-                        >
-                          {user.estado === 'activo' ? <FaToggleOff /> : <FaToggleOn />}
-                        </button>
+                        
+                        {user.estado === 'activo' ? (
+                          <>
+                            <button 
+                              className="btn btn-sm btn-warning"
+                              onClick={() => handleInactivateUser(user)}
+                              title="Inactivar usuario"
+                            >
+                              <FaToggleOff />
+                            </button>
+                            <button 
+                              className="btn btn-sm btn-danger"
+                              onClick={() => handleBlockUser(user)}
+                              title="Bloquear usuario"
+                            >
+                              <FaLock />
+                            </button>
+                          </>
+                        ) : user.estado === 'inactivo' ? (
+                          <>
+                            <button 
+                              className="btn btn-sm btn-success"
+                              onClick={() => handleActivateUser(user)}
+                              title="Activar usuario"
+                            >
+                              <FaToggleOn />
+                            </button>
+                            <button 
+                              className="btn btn-sm btn-danger"
+                              onClick={() => handleBlockUser(user)}
+                              title="Bloquear usuario"
+                            >
+                              <FaLock />
+                            </button>
+                          </>
+                        ) : (
+                          <button 
+                            className="btn btn-sm btn-success"
+                            onClick={() => handleActivateUser(user)}
+                            title="Activar usuario"
+                          >
+                            <FaUnlock />
+                          </button>
+                        )}
+                        
                         <button 
                           className="btn btn-sm btn-danger"
-                          onClick={() => handleBlockUser(user.id)}
-                          title="Bloquear usuario"
-                          disabled={user.estado === 'bloqueado'}
+                          onClick={() => handleDeleteUser(user)}
+                          title="Eliminar usuario"
                         >
                           <FaBan />
                         </button>
@@ -546,6 +637,18 @@ function PanelUsuarios({ onNavigate, onLogout }) {
                       {dep.nombre}
                     </option>
                   ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label inter-semibold">Estado *</label>
+                <select
+                  className="form-control"
+                  value={formData.estado}
+                  onChange={(e) => setFormData({...formData, estado: e.target.value})}
+                >
+                  <option value="activo">Activo</option>
+                  <option value="inactivo">Inactivo</option>
+                  <option value="bloqueado">Bloqueado</option>
                 </select>
               </div>
             </div>

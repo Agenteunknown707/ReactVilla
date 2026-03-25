@@ -13,7 +13,6 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
   const [editingId, setEditingId] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [dependenciaToDelete, setDependenciaToDelete] = useState(null);
-  const [showAccessModal, setShowAccessModal] = useState(false);
   const [currentDependencia, setCurrentDependencia] = useState(null);
   const [showUsersModal, setShowUsersModal] = useState(false); // New state for users modal
   const [selectedDependenciaUsers, setSelectedDependenciaUsers] = useState([]); // New state for selected dependency users
@@ -21,9 +20,6 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
   // Form state
   const [formData, setFormData] = useState({
     nombre: '',
-    responsable: '',
-    email: '',
-    telefono: '',
     estado: 'Activo'
   });
 
@@ -65,90 +61,58 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
     setLoading(true);
     // Simulate API call
     setTimeout(() => {
-      // Mock data with categories
-      const mockData = [
+      // Mock dependencies data
+      const mockDependencias = [
         {
           id: 1,
           nombre: 'Dirección de Obras Públicas',
-          responsable: 'Juan Pérez',
-          email: 'juan.perez@ejemplo.com',
-          telefono: '555-123-4567',
           estado: 'Activo',
-          acceso: 'Activo',
           categorias: ['Baches', 'Señalamiento', 'Alcantarillado', 'Pavimento']
         },
         {
           id: 2,
           nombre: 'Dirección de Alumbrado Público',
-          responsable: 'María García',
-          email: 'maria.garcia@ejemplo.com',
-          telefono: '555-987-6543',
           estado: 'Activo',
-          acceso: 'Activo',
           categorias: ['Luminarias', 'Postes', 'Cables', 'Transformadores']
         },
         {
           id: 3,
           nombre: 'Comisión o Dirección de Agua Potable CIAPACOV',
-          responsable: 'Carlos López',
-          email: 'carlos.lopez@ejemplo.com',
-          telefono: '555-456-7890',
           estado: 'Activo',
-          acceso: 'Activo',
           categorias: ['Fugas', 'Conexiones', 'Calidad del Agua', 'Tuberías']
         },
         {
           id: 4,
           nombre: 'Dirección de Servicios Públicos Municipales',
-          responsable: 'Ana Martínez',
-          email: 'ana.martinez@ejemplo.com',
-          telefono: '555-234-5678',
           estado: 'Activo',
-          acceso: 'Activo',
           categorias: ['Limpieza', 'Alumbrado', 'Parques', 'Basura']
         },
         {
           id: 5,
           nombre: 'Dirección de Parques y Jardines',
-          responsable: 'Roberto Sánchez',
-          email: 'roberto.sanchez@ejemplo.com',
-          telefono: '555-345-6789',
           estado: 'Activo',
-          acceso: 'Activo',
           categorias: ['Mantenimiento', 'Riego', 'Podas', 'Jardinería']
         },
         {
           id: 6,
           nombre: 'Dirección de Ecología o Medio Ambiente',
-          responsable: 'Laura Hernández',
-          email: 'laura.hernandez@ejemplo.com',
-          telefono: '555-456-7890',
           estado: 'Activo',
-          acceso: 'Activo',
           categorias: ['Reciclaje', 'Contaminación', 'Conservación', 'Educación Ambiental']
         },
         {
           id: 7,
           nombre: 'Dirección de Tránsito o Movilidad Municipal',
-          responsable: 'Miguel Ángel Torres',
-          email: 'miguel.torres@ejemplo.com',
-          telefono: '555-567-8901',
           estado: 'Activo',
-          acceso: 'Activo',
           categorias: ['Señales', 'Semáforos', 'Velocidad', 'Estacionamiento']
         },
         {
           id: 8,
           nombre: 'Protección Civil',
-          responsable: 'Diana Ruiz',
-          email: 'diana.ruiz@ejemplo.com',
-          telefono: '555-678-9012',
           estado: 'Activo',
-          acceso: 'Activo',
           categorias: ['Emergencias', 'Prevención', 'Evacuación', 'Simulacros']
         }
       ];
-      setDependencias(mockData);
+      setDependencias(mockDependencias);
       setLoading(false);
     }, 500);
   };
@@ -215,27 +179,9 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
   // Validate form
   const validateForm = () => {
     const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^[0-9\-\+\(\)\s]{10,20}$/;
     
     if (!formData.nombre.trim()) {
       newErrors.nombre = 'El nombre es requerido';
-    }
-    
-    if (!formData.responsable.trim()) {
-      newErrors.responsable = 'El responsable es requerido';
-    }
-    
-    if (!formData.email) {
-      newErrors.email = 'El email es requerido';
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Ingrese un email válido';
-    }
-    
-    if (!formData.telefono) {
-      newErrors.telefono = 'El teléfono es requerido';
-    } else if (!phoneRegex.test(formData.telefono)) {
-      newErrors.telefono = 'Ingrese un teléfono válido';
     }
     
     setErrors(newErrors);
@@ -264,6 +210,15 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Reset form
+  const resetForm = () => {
+    setFormData({
+      nombre: '',
+      estado: 'Activo'
+    });
+    setEditingId(null);
+  };
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -279,31 +234,19 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
       // Add new dependency
       const newDependency = {
         ...formData,
-        id: Date.now(),
-        acceso: 'Inactivo' // Default access status
+        id: Date.now()
       };
-      setDependencias([newDependency, ...dependencias]);
+      setDependencias([...dependencias, newDependency]);
     }
     
-    // Reset form and close
+    resetForm();
     setShowForm(false);
-    setEditingId(null);
-    setFormData({
-      nombre: '',
-      responsable: '',
-      email: '',
-      telefono: '',
-      estado: 'Activo'
-    });
   };
 
   // Handle edit button click
   const handleEdit = (dependencia) => {
     setFormData({
       nombre: dependencia.nombre,
-      responsable: dependencia.responsable,
-      email: dependencia.email,
-      telefono: dependencia.telefono,
       estado: dependencia.estado
     });
     setEditingId(dependencia.id);
@@ -323,50 +266,11 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
     setDependenciaToDelete(null);
   };
 
-  // Handle access button click
-  const handleAccessClick = (dependencia) => {
-    setCurrentDependencia(dependencia);
-    setAccessData({
-      usuario: '',
-      contrasena: '',
-      confirmarContrasena: '',
-      acceso: dependencia.acceso || 'Inactivo'
-    });
-    setShowAccessModal(true);
-  };
-
-  // Handle access form submission
-  const handleAccessSubmit = (e) => {
-    e.preventDefault();
-    
-    if (!validateAccessForm()) return;
-    
-    // Update dependency with new access data
-    setDependencias(dependencias.map(dep => 
-      dep.id === currentDependencia.id 
-        ? { ...dep, acceso: accessData.acceso } 
-        : dep
-    ));
-    
-    // Reset and close modal
-    setShowAccessModal(false);
-    setCurrentDependencia(null);
-  };
-
   // Toggle dependency status
   const toggleStatus = (id) => {
     setDependencias(dependencias.map(dep => 
       dep.id === id 
         ? { ...dep, estado: dep.estado === 'Activo' ? 'Inactivo' : 'Activo' } 
-        : dep
-    ));
-  };
-
-  // Toggle access status
-  const toggleAccessStatus = (id) => {
-    setDependencias(dependencias.map(dep => 
-      dep.id === id 
-        ? { ...dep, acceso: dep.acceso === 'Activo' ? 'Inactivo' : 'Activo' } 
         : dep
     ));
   };
@@ -402,24 +306,20 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
               <thead>
                 <tr>
                   <th>Nombre</th>
-                  <th>Responsable</th>
-                  <th>Email</th>
-                  <th>Teléfono</th>
                   <th>Usuarios</th>
                   <th>Categorías</th>
                   <th>Estado</th>
-                  <th>Acceso</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="9" className="loading-cell">Cargando dependencias...</td>
+                    <td colSpan="5" className="loading-cell">Cargando dependencias...</td>
                   </tr>
                 ) : dependencias.length === 0 ? (
                   <tr>
-                    <td colSpan="9" className="no-data">No hay dependencias registradas</td>
+                    <td colSpan="5" className="no-data">No hay dependencias registradas</td>
                   </tr>
                 ) : (
                   dependencias.map((dependencia) => {
@@ -432,9 +332,6 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
                             {dependencia.nombre}
                           </div>
                         </td>
-                        <td>{dependencia.responsable}</td>
-                        <td>{dependencia.email}</td>
-                        <td>{dependencia.telefono}</td>
                         <td>
                           <div className="usuarios-info">
                             <button 
@@ -493,14 +390,6 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
                             {dependencia.estado}
                           </span>
                         </td>
-                        <td>
-                          <span 
-                            className={`access-badge ${dependencia.acceso === 'Activo' ? 'active' : 'inactive'}`}
-                            onClick={() => toggleAccessStatus(dependencia.id)}
-                          >
-                            {dependencia.acceso === 'Activo' ? 'Acceso Activo' : 'Acceso Restringido'}
-                          </span>
-                        </td>
                         <td className="actions">
                           <button 
                             className="btn btn-icon" 
@@ -515,13 +404,6 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
                             title="Eliminar"
                           >
                             <FaTrash />
-                          </button>
-                          <button 
-                            className=" btn btn-icon btn-access" 
-                            onClick={() => handleAccessClick(dependencia)}
-                            title="Gestionar Acceso"
-                          >
-                            <FaLock />
                           </button>
                         </td>
                       </tr>
@@ -552,66 +434,28 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
                     />
                     {errors.nombre && <span className="error-message">{errors.nombre}</span>}
                   </div>
-                  
                   <div className="form-group">
-                    <label>Responsable*</label>
-                    <input 
-                      type="text" 
-                      name="responsable"
-                      value={formData.responsable}
-                      onChange={handleInputChange}
-                      className={errors.responsable ? 'error' : ''}
-                    />
-                    {errors.responsable && <span className="error-message">{errors.responsable}</span>}
-                  </div>
-                  
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Email*</label>
-                      <input 
-                        type="email" 
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className={errors.email ? 'error' : ''}
-                      />
-                      {errors.email && <span className="error-message">{errors.email}</span>}
-                    </div>
-                    
-                    <div className="form-group">
-                      <label>Teléfono*</label>
-                      <input 
-                        type="tel" 
-                        name="telefono"
-                        value={formData.telefono}
-                        onChange={handleInputChange}
-                        className={errors.telefono ? 'error' : ''}
-                      />
-                      {errors.telefono && <span className="error-message">{errors.telefono}</span>}
-                    </div>
-                  </div>
-                  
-                  <div className="form-group">
-                    <label>Estado</label>
+                    <label>Estado*</label>
                     <select 
-                      name="estado" 
+                      name="estado"
                       value={formData.estado}
                       onChange={handleInputChange}
+                      className={errors.estado ? 'error' : ''}
                     >
                       <option value="Activo">Activo</option>
                       <option value="Inactivo">Inactivo</option>
                     </select>
+                    {errors.estado && <span className="error-message">{errors.estado}</span>}
                   </div>
-                  
-                  <div className="form-actions">
+                  <div className="modal-footer">
                     <button 
                       type="button" 
-                      className=" btn btn-secondary"
+                      className="btn btn-secondary"
                       onClick={() => setShowForm(false)}
                     >
                       Cancelar
                     </button>
-                    <button type="submit" className=" btn btn-primary">
+                    <button type="submit" className="btn btn-primary">
                       {editingId ? 'Actualizar' : 'Guardar'}
                     </button>
                   </div>
@@ -646,96 +490,6 @@ const DependenciasScreen = ({ onNavigate, onLogout }) => {
                     Eliminar
                   </button>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {/* Access Management Modal */}
-          {showAccessModal && (
-            <div className="modal-overlay">
-              <div className="modal">
-                <div className="modal-header">
-                  <h2>Gestión de Acceso</h2>
-                  <button className=" btn close-btn" onClick={() => setShowAccessModal(false)}>×</button>
-                </div>
-                <form onSubmit={handleAccessSubmit} className="modal-form">
-                  <div className="form-group">
-                    <label>Dependencia</label>
-                    <input 
-                      type="text" 
-                      value={currentDependencia?.nombre}
-                      disabled 
-                      className="disabled"
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label>Usuario*</label>
-                    <input 
-                      type="text" 
-                      name="usuario"
-                      value={accessData.usuario}
-                      onChange={handleAccessInputChange}
-                      className={errors.usuario ? 'error' : ''}
-                      placeholder="Nombre de usuario para acceso"
-                    />
-                    {errors.usuario && <span className="error-message">{errors.usuario}</span>}
-                  </div>
-                  
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Contraseña*</label>
-                      <input 
-                        type="password" 
-                        name="contrasena"
-                        value={accessData.contrasena}
-                        onChange={handleAccessInputChange}
-                        className={errors.contrasena ? 'error' : ''}
-                        placeholder="Mínimo 6 caracteres"
-                      />
-                      {errors.contrasena && <span className="error-message">{errors.contrasena}</span>}
-                    </div>
-                    
-                    <div className="form-group">
-                      <label>Confirmar Contraseña*</label>
-                      <input 
-                        type="password" 
-                        name="confirmarContrasena"
-                        value={accessData.confirmarContrasena}
-                        onChange={handleAccessInputChange}
-                        className={errors.confirmarContrasena ? 'error' : ''}
-                      />
-                      {errors.confirmarContrasena && (
-                        <span className="error-message">{errors.confirmarContrasena}</span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="form-group">
-                    <label>Estado de Acceso</label>
-                    <select 
-                      name="acceso" 
-                      value={accessData.acceso}
-                      onChange={handleAccessInputChange}
-                    >
-                      <option value="Activo">Acceso Activo</option>
-                      <option value="Inactivo">Acceso Restringido</option>
-                    </select>
-                  </div>
-                  
-                  <div className="form-actions">
-                    <button 
-                      type="button" 
-                      className=" btn btn-secondary"
-                      onClick={() => setShowAccessModal(false)}
-                    >
-                      Cancelar
-                    </button>
-                    <button type="submit" className=" btn btn-primary">
-                      Guardar Cambios
-                    </button>
-                  </div>
-                </form>
               </div>
             </div>
           )}
